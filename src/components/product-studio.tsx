@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { formatKm, savings, unitForQty, type Product } from "@/lib/catalog";
+import { formatKm, formatQty, savings, unitForQty, type Product } from "@/lib/catalog";
 import { Button } from "@/components/ui/button";
 
 export function ProductStudio({ product }: { product: Product }) {
@@ -51,7 +51,7 @@ export function ProductStudio({ product }: { product: Product }) {
         <p className="text-xs tracking-[0.14em] text-muted-foreground uppercase">Odabir</p>
         <p className="mt-1 text-sm text-muted-foreground">
           Od {formatKm(product.tiers.at(-1)!.unit)} / kom pri{" "}
-          {product.tiers.at(-1)!.qty.toLocaleString("bs-BA")} kom
+          {formatQty(product.tiers.at(-1)!.qty)} kom
         </p>
 
         <fieldset className="mt-5">
@@ -128,7 +128,7 @@ export function ProductStudio({ product }: { product: Product }) {
                   onClick={() => setQty(tier.qty)}
                   className={`flex w-full items-center justify-between px-3 py-2.5 text-left text-sm ${active ? "bg-ink text-paper" : "hover:bg-muted"}`}
                 >
-                  <span>{tier.qty.toLocaleString("bs-BA")} kom</span>
+                  <span>{formatQty(tier.qty)} kom</span>
                   <span className="flex items-center gap-3">
                     {cut > 0 ? <span className={active ? "text-paper/70" : "text-laser"}>−{cut}%</span> : null}
                     <span className="font-medium">{formatKm(tier.unit)}</span>

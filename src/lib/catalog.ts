@@ -541,12 +541,17 @@ export function savings(product: Product, unit: number) {
   return Math.round((1 - unit / base) * 100);
 }
 
+function groupThousands(value: string) {
+  return value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+export function formatQty(value: number) {
+  return groupThousands(String(Math.round(value)));
+}
+
 export function formatKm(value: number) {
-  const formatted = new Intl.NumberFormat("bs-BA", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-  return `${formatted} KM`;
+  const [whole, frac] = value.toFixed(2).split(".");
+  return `${groupThousands(whole)},${frac} KM`;
 }
 
 export function relatedProducts(product: Product) {

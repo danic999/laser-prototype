@@ -62,9 +62,8 @@ export default function HomePage() {
           <figure className="relative aspect-square overflow-hidden rounded-2xl bg-white">
             <Image src="/products/olovka-crna.jpg" alt="Metalna kemijska K002" fill className="object-contain p-4" />
           </figure>
-          <figure className="relative aspect-square overflow-hidden rounded-2xl bg-[#1a1a1a]">
-            <Image src="/products/upaljac.jpg" alt="Laserlight upaljač" fill className="object-contain p-6" />
-            <figcaption className="absolute bottom-3 left-3 text-xs text-white/80">Laserlight</figcaption>
+          <figure className="relative aspect-square overflow-hidden rounded-2xl bg-white">
+            <Image src="/products/upaljac.jpg" alt="Laserlight upaljač" fill className="object-contain p-4" />
           </figure>
         </div>
       </section>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { ProductStudio } from "@/components/product-studio";
-import { getCategory, getProduct, relatedProducts } from "@/lib/catalog";
+import { formatQty, getCategory, getProduct, relatedProducts } from "@/lib/catalog";
 
 export async function generateMetadata({
   params,
@@ -67,7 +67,7 @@ export default async function ProductPage({
             ))}
             <div className="flex justify-between gap-4 py-2">
               <dt className="text-muted-foreground">Minimum</dt>
-              <dd>{product.minQty.toLocaleString("bs-BA")} kom</dd>
+              <dd>{formatQty(product.minQty)} kom</dd>
             </div>
           </dl>
         </section>

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { entryTier, floorTier, formatKm, type Product } from "@/lib/catalog";
+import { entryTier, floorTier, formatKm, formatQty, type Product } from "@/lib/catalog";
 
 export function ProductCard({ product }: { product: Product }) {
   const from = floorTier(product);
@@ -35,14 +35,14 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="mt-3 space-y-0.5 text-sm">
         <p>
           <span className="font-medium">{formatKm(from.unit)}</span>
-          <span className="text-muted-foreground"> / kom od {from.qty.toLocaleString("bs-BA")} kom</span>
+          <span className="text-muted-foreground"> / kom od {formatQty(from.qty)} kom</span>
         </p>
         <p className="text-muted-foreground">
-          {start.qty.toLocaleString("bs-BA")} kom · {formatKm(start.unit)}
+          {formatQty(start.qty)} kom · {formatKm(start.unit)}
         </p>
       </div>
       <p className="mt-2 text-xs text-muted-foreground">
-        {product.inStock ? "Na zalihi u Ljubuškom" : "Na upit"}
+        {product.inStock ? "Na zalihi" : "Na upit"}
       </p>
       <Link
         href={`/proizvod/${product.slug}`}
