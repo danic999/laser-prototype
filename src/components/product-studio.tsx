@@ -79,7 +79,7 @@ export function ProductStudio({ product }: { product: Product }) {
                 key={item}
                 type="button"
                 onClick={() => setPrint(item)}
-                className={`rounded-full border px-3 py-1.5 text-sm ${item === print ? "border-ink bg-ink text-paper" : "border-border"}`}
+                className={`rounded-full border px-3 py-1.5 text-sm ${item === print ? "border-navy bg-navy text-white" : "border-border"}`}
               >
                 {item}
               </button>
@@ -126,11 +126,11 @@ export function ProductStudio({ product }: { product: Product }) {
                   key={tier.qty}
                   type="button"
                   onClick={() => setQty(tier.qty)}
-                  className={`flex w-full items-center justify-between px-3 py-2.5 text-left text-sm ${active ? "bg-ink text-paper" : "hover:bg-muted"}`}
+                  className={`flex w-full items-center justify-between px-3 py-2.5 text-left text-sm ${active ? "bg-navy text-white" : "hover:bg-muted"}`}
                 >
                   <span>{formatQty(tier.qty)} kom</span>
                   <span className="flex items-center gap-3">
-                    {cut > 0 ? <span className={active ? "text-paper/70" : "text-laser"}>−{cut}%</span> : null}
+                    {cut > 0 ? <span className={active ? "text-white/70" : "text-stock"}>−{cut}%</span> : null}
                     <span className="font-medium">{formatKm(tier.unit)}</span>
                   </span>
                 </button>
@@ -151,7 +151,7 @@ export function ProductStudio({ product }: { product: Product }) {
         </div>
         <p className="mt-3 text-sm">Rok: {product.lead}.</p>
         <div className="mt-5 flex flex-col gap-2">
-          <Button render={<Link href={quoteHref} />} className="h-11 bg-laser text-white hover:bg-laser/90">
+          <Button render={<Link href={quoteHref} />} className="h-11 rounded-full bg-stock text-white hover:bg-stock/90">
             Zatraži ponudu
           </Button>
           <Button

@@ -78,13 +78,9 @@ export default function BrandPage() {
         <h2 className="font-heading text-2xl font-medium">Slova</h2>
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <div className="rounded-2xl border border-border bg-card p-6">
-            <p className="font-heading text-4xl font-medium tracking-tight">Outfit</p>
-            <p className="mt-2 text-sm text-muted-foreground">Naslovi. Geometrijski, blizu širine znaka, bez natjecanja s njim.</p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-6">
-            <p className="text-3xl">Source Sans 3</p>
+            <p className="text-4xl font-extrabold tracking-tight">Montserrat</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Tekst, cijene, filteri. Ima naša slova: č, ć, đ, š, ž.
+              Isti rez kao na IGO katalogu. Naslovi su ekstra podebljani, tekst i cijene redovni. Ima č, ć, đ, š, ž.
             </p>
           </div>
         </div>
@@ -101,12 +97,12 @@ export default function BrandPage() {
           <div>
             <h2 className="font-heading text-2xl font-medium">Gumbi</h2>
             <div className="mt-4 flex flex-wrap gap-3">
-              <span className="inline-flex h-11 items-center rounded-lg bg-ink px-5 text-sm text-paper">Otvori asortiman</span>
-              <span className="inline-flex h-11 items-center rounded-lg bg-laser px-5 text-sm text-white">Zatraži ponudu</span>
-              <span className="inline-flex h-11 items-center rounded-lg border border-ink px-5 text-sm">Zatraži uzorak</span>
+              <span className="inline-flex h-11 items-center rounded-full bg-navy px-5 text-sm text-white">Sve kategorije</span>
+              <span className="inline-flex h-11 items-center rounded-full bg-orange px-5 text-sm font-bold text-white">Traži</span>
+              <span className="inline-flex h-11 items-center rounded-full bg-stock px-5 text-sm font-bold text-white">Zatraži ponudu</span>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">
-              Crna vodi kroz katalog. Crvena je samo za ponudu. Na jednom ekranu jedna crvena akcija.
+              Shop koristi mornarsku, narančastu i zelenu kao IGO katalog. Znak LASER i dalje ima svoju crvenu zraku, #E2231A.
             </p>
           </div>
           <div>

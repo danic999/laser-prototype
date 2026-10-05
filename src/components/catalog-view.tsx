@@ -11,11 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  categories,
-  entryTier,
-  type Product,
-} from "@/lib/catalog";
+import { categories, entryTier, type Category, type Product } from "@/lib/catalog";
 
 const printOptions = [
   "Lasersko graviranje",
@@ -32,11 +28,15 @@ export function CatalogView({
   title,
   intro,
   query = "",
+  category,
+  activeSub,
 }: {
   products: Product[];
   title: string;
   intro?: string;
   query?: string;
+  category?: Category;
+  activeSub?: string;
 }) {
   const [print, setPrint] = useState<string | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
@@ -60,18 +60,40 @@ export function CatalogView({
   const filters = (
     <div className="space-y-6">
       <div>
-        <p className="text-xs tracking-[0.14em] text-muted-foreground uppercase">Kategorija</p>
+        <p className="text-xs font-bold tracking-[0.14em] text-muted-foreground uppercase">
+          {category ? "Podkategorije" : "Kategorije"}
+        </p>
         <ul className="mt-2 space-y-1">
-          {categories.map((category) => (
-            <li key={category.slug}>
-              <a
-                href={`/kategorija/${category.slug}`}
-                className="block rounded-md px-2 py-1.5 text-sm hover:bg-muted"
-              >
-                {category.short}
-              </a>
-            </li>
-          ))}
+          {category ? (
+            <>
+              <li>
+                <a
+                  href={`/kategorija/${category.slug}`}
+                  className={`block rounded-md px-2 py-1.5 text-sm ${!activeSub ? "bg-navy text-white" : "hover:bg-muted"}`}
+                >
+                  Sve u kategoriji
+                </a>
+              </li>
+              {category.subs.map((sub) => (
+                <li key={sub.slug}>
+                  <a
+                    href={`/kategorija/${category.slug}/${sub.slug}`}
+                    className={`block rounded-md px-2 py-1.5 text-sm ${activeSub === sub.slug ? "bg-navy text-white" : "hover:bg-muted"}`}
+                  >
+                    {sub.name}
+                  </a>
+                </li>
+              ))}
+            </>
+          ) : (
+            categories.map((item) => (
+              <li key={item.slug}>
+                <a href={`/kategorija/${item.slug}`} className="block rounded-md px-2 py-1.5 text-sm hover:bg-muted">
+                  {item.name}
+                </a>
+              </li>
+            ))
+          )}
         </ul>
       </div>
       <div>
@@ -155,7 +177,10 @@ export function CatalogView({
         <p className="mt-4 text-sm text-muted-foreground">{visible.length} artikala</p>
         {visible.length === 0 ? (
           <div className="mt-8 rounded-xl border border-dashed border-border bg-card px-6 py-12 text-center">
-            <p className="font-medium">Nema artikala za ovaj odabir.</p>
+            <p className="font-medium">U ovoj grani pregleda nema Laser artikla.</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Kategorije su iste kao na IGO katalogu. Artikli su iz asortimana LASER d.o.o.
+            </p>
             <Button className="mt-4" variant="outline" onClick={() => { setPrint(null); setMaxPrice(null); }}>
               Poništi filtere
             </Button>
@@ -185,7 +210,7 @@ function FilterButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-md px-2 py-1.5 text-left text-sm ${active ? "bg-ink text-paper" : "hover:bg-muted"}`}
+      className={`rounded-md px-2 py-1.5 text-left text-sm ${active ? "bg-navy text-white" : "hover:bg-muted"}`}
     >
       {children}
     </button>

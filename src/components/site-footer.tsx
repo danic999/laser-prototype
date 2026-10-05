@@ -74,7 +74,7 @@ export function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-[1180px] flex-col gap-2 px-4 py-4 text-xs text-paper/50 sm:flex-row sm:justify-between sm:px-6">
           <p>Besplatna dostava za narudžbe preko 410 KM, do 30 kg. Kod dotiska akcije ne važe.</p>
-          <p>Prototip izgleda, 2026.</p>
+          <p>Pregled izgleda. Cijene paketa i artikala su primjer, ne službeni cjenik.</p>
         </div>
       </div>
     </footer>

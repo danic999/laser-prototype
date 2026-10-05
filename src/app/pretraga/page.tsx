@@ -7,16 +7,18 @@ export const metadata: Metadata = { title: "Pretraga" };
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; kategorija?: string; tisak?: string }>;
+  searchParams: Promise<{ q?: string; kategorija?: string; tisak?: string; kolicina?: string }>;
 }) {
-  const { q = "", kategorija = "", tisak = "" } = await searchParams;
+  const { q = "", kategorija = "", tisak = "", kolicina = "" } = await searchParams;
   const query = q.trim().toLowerCase();
+  const qty = Number(kolicina);
   const filtered = products.filter((product) => {
     const haystack = `${product.name} ${product.sku} ${product.description}`.toLowerCase();
     const matchesQuery = !query || haystack.includes(query);
     const matchesCategory = !kategorija || product.category === kategorija;
     const matchesPrint = !tisak || product.prints.includes(tisak);
-    return matchesQuery && matchesCategory && matchesPrint;
+    const matchesQty = !qty || product.minQty <= qty;
+    return matchesQuery && matchesCategory && matchesPrint && matchesQty;
   });
 
   const title = query ? `Rezultati za „${q.trim()}”` : "Cijeli pregled";

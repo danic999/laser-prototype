@@ -28,6 +28,7 @@ export default async function CategoryPage({
         title={category.name}
         intro={category.blurb}
         products={productsIn(category.slug)}
+        category={category}
       />
     </main>
   );

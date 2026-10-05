@@ -12,6 +12,7 @@ export type Product = {
   sku: string;
   name: string;
   category: string;
+  subcategory: string;
   colors: ProductColor[];
   prints: string[];
   locations: string[];
@@ -24,79 +25,8 @@ export type Product = {
   featured?: boolean;
 };
 
-export type Category = {
-  slug: string;
-  name: string;
-  short: string;
-  group: "Promo artikli" | "Tekstil" | "Tisak i oprema";
-  blurb: string;
-};
-
-export const categories: Category[] = [
-  {
-    slug: "torbe",
-    name: "Ruksaci, vrećice i torbe",
-    short: "Torbe",
-    group: "Promo artikli",
-    blurb: "Shopping torbe, jute, eko vrećice, rashladne torbe i laptop torbe za sajmove i dostavu.",
-  },
-  {
-    slug: "kisobrani",
-    name: "Kišobrani",
-    short: "Kišobrani",
-    group: "Promo artikli",
-    blurb: "Sklopivi i golf kišobrani za tisak logotipa.",
-  },
-  {
-    slug: "pisaci-pribor",
-    name: "Pisaći pribor",
-    short: "Olovke",
-    group: "Promo artikli",
-    blurb: "Metalne kemijske, roleri i gel olovke. Gravura ili UV tisak.",
-  },
-  {
-    slug: "boce-i-salice",
-    name: "Boce i šalice",
-    short: "Boce",
-    group: "Promo artikli",
-    blurb: "Promo boce i sublimacijske šalice.",
-  },
-  {
-    slug: "upaljaci",
-    name: "Laserlight upaljači",
-    short: "Laserlight",
-    group: "Promo artikli",
-    blurb: "Laserlight upaljači, vlastita linija za tisak i gravuru.",
-  },
-  {
-    slug: "tekstil",
-    name: "Tekstil",
-    short: "Tekstil",
-    group: "Tekstil",
-    blurb: "Polo majice, majice, dukserice i jakne za DTF i dotisak. U ponudi su i Stedman te MUKUA.",
-  },
-  {
-    slug: "reklame",
-    name: "Reklame i klik-klak",
-    short: "Reklame",
-    group: "Tisak i oprema",
-    blurb: "Pop-up banneri, klik-klak ramovi i unutarnje reklame.",
-  },
-  {
-    slug: "pokloni",
-    name: "Poklon kutije i privjesci",
-    short: "Pokloni",
-    group: "Promo artikli",
-    blurb: "Kožne kutije, privjesci i sitni poslovni pokloni.",
-  },
-  {
-    slug: "sublimacija",
-    name: "Sublimacija",
-    short: "Sublimacija",
-    group: "Tisak i oprema",
-    blurb: "Šalice, podloge i repromaterijal za sublimacijski tisak, plus prese i printeri.",
-  },
-];
+export type { Category } from "@/lib/categories";
+export { categories, getCategory, getSubcategory } from "@/lib/categories";
 
 export const services = [
   {
@@ -140,6 +70,7 @@ export const products: Product[] = [
     sku: "K002",
     name: "Kemijska olovka metalna",
     category: "pisaci-pribor",
+    subcategory: "kemijske-olovke",
     featured: true,
     colors: [
       { id: "crna", name: "Crna", hex: "#1a1a1a", image: "/products/olovka-crna.jpg" },
@@ -170,6 +101,7 @@ export const products: Product[] = [
     sku: "R002-S",
     name: "Roler metalni silver",
     category: "pisaci-pribor",
+    subcategory: "pisaci-setovi",
     colors: [{ id: "srebrna", name: "Srebrna", hex: "#c5c8cc", image: "/products/roler.jpg" }],
     prints: penPrints,
     locations: ["Na tijelu", "Na kapici"],
@@ -193,6 +125,7 @@ export const products: Product[] = [
     sku: "WP-900",
     name: "Gel kemijska olovka Gelux",
     category: "pisaci-pribor",
+    subcategory: "kemijske-olovke",
     colors: [{ id: "mjesovito", name: "Više boja", hex: "#3d5a80", image: "/products/gelux.jpg" }],
     prints: ["UV tisak", "Tampotisak", "Bez tiska"],
     locations: ["Na tijelu"],
@@ -215,7 +148,8 @@ export const products: Product[] = [
     slug: "ki0294-shopping-torba",
     sku: "KI0294",
     name: "Shopping torba",
-    category: "torbe",
+    category: "torbe-i-putovanja",
+    subcategory: "shopping-torbe",
     featured: true,
     colors: [{ id: "crna", name: "Crna", hex: "#1c1c1c", image: "/products/torba.jpg" }],
     prints: ["Sitotisak", "DTF tisak", "Bez tiska"],
@@ -241,7 +175,8 @@ export const products: Product[] = [
     slug: "ki0434-torba-laptop",
     sku: "KI0434",
     name: "Torba za laptop",
-    category: "torbe",
+    category: "torbe-i-putovanja",
+    subcategory: "torbe-za-laptop",
     colors: [{ id: "crna", name: "Crna", hex: "#222", image: "/products/laptop.jpg" }],
     prints: ["Sitotisak", "Vez", "Bez tiska"],
     locations: ["Prednja strana"],
@@ -260,7 +195,8 @@ export const products: Product[] = [
     slug: "vr-14c-eko-vrecica",
     sku: "VR-14C",
     name: "Eko vrećica",
-    category: "torbe",
+    category: "torbe-i-putovanja",
+    subcategory: "pamucne-torbe",
     colors: [{ id: "prirodna", name: "Prirodna", hex: "#d8c7a2", image: "/products/eko.jpg" }],
     prints: ["Sitotisak", "DTF tisak", "Bez tiska"],
     locations: ["Prednja strana"],
@@ -283,7 +219,8 @@ export const products: Product[] = [
     slug: "rt05-rashladni-ruksak",
     sku: "RT05",
     name: "Rashladni ruksak",
-    category: "torbe",
+    category: "torbe-i-putovanja",
+    subcategory: "rashladne-torbe",
     featured: true,
     colors: [{ id: "siva", name: "Siva", hex: "#8d8f92", image: "/products/ruksak.jpg" }],
     prints: ["Sitotisak", "DTF tisak", "Bez tiska"],
@@ -306,7 +243,8 @@ export const products: Product[] = [
     slug: "tm-06-kisobran-golf",
     sku: "TM-06",
     name: "Kišobran golf ERO 27",
-    category: "kisobrani",
+    category: "slobodno-vrijeme",
+    subcategory: "kisobrani",
     featured: true,
     colors: [
       { id: "crna", name: "Crna", hex: "#111", image: "/products/kisobran.jpg" },
@@ -336,7 +274,8 @@ export const products: Product[] = [
     slug: "tm-02-kisobran-sklopivi",
     sku: "TM-02",
     name: "Kišobran mali sklopivi teleskopski",
-    category: "kisobrani",
+    category: "slobodno-vrijeme",
+    subcategory: "kisobrani",
     colors: [{ id: "crna", name: "Crna", hex: "#1a1a1a", image: "/products/kisobran-mali.jpg" }],
     prints: ["Sitotisak", "Bez tiska"],
     locations: ["Na polju"],
@@ -355,7 +294,8 @@ export const products: Product[] = [
     slug: "sm-405-boca",
     sku: "SM-405",
     name: "Promo boca Steel 500 ml",
-    category: "boce-i-salice",
+    category: "posude-za-pice",
+    subcategory: "boce-za-vodu",
     featured: true,
     colors: [{ id: "celik", name: "Čelik", hex: "#b7bcc2", image: "/products/boca.jpg" }],
     prints: ["Lasersko graviranje", "UV tisak", "Bez tiska"],
@@ -379,7 +319,8 @@ export const products: Product[] = [
     slug: "sm-50-salica",
     sku: "SM-50",
     name: "Sublimacijska šalica",
-    category: "sublimacija",
+    category: "posude-za-pice",
+    subcategory: "salice",
     featured: true,
     colors: [{ id: "bijela", name: "Bijela", hex: "#f7f7f7", image: "/products/salica.jpg" }],
     prints: ["Sublimacija", "Bez tiska"],
@@ -400,7 +341,8 @@ export const products: Product[] = [
     slug: "l8000-laserlight",
     sku: "L8000",
     name: "Laserlight upaljač",
-    category: "upaljaci",
+    category: "pokloni-i-igre",
+    subcategory: "upaljaci",
     featured: true,
     colors: [
       { id: "crni", name: "Crni", hex: "#111", image: "/products/upaljac.jpg" },
@@ -427,7 +369,8 @@ export const products: Product[] = [
     slug: "st9160-polo",
     sku: "ST9160",
     name: "Polo majica, kratki rukav, žene",
-    category: "tekstil",
+    category: "odjeca-i-dodaci",
+    subcategory: "polo-majice",
     featured: true,
     colors: [{ id: "bijela", name: "Bijela", hex: "#f4f4f4", image: "/products/polo.jpg" }],
     prints: textilePrints,
@@ -452,7 +395,8 @@ export const products: Product[] = [
     slug: "ag524-popup",
     sku: "AG524",
     name: "Pop-up zidni banner",
-    category: "reklame",
+    category: "ured-i-poslovanje",
+    subcategory: "uredski-proizvodi",
     colors: [{ id: "tisak", name: "Po nacrtu", hex: "#d8d2c6", image: "/products/banner.jpg" }],
     prints: ["Digitalni tisak"],
     locations: ["Cijela površina"],
@@ -472,6 +416,7 @@ export const products: Product[] = [
     sku: "P021",
     name: "Kožna poklon kutija za olovke",
     category: "pokloni",
+    subcategory: "poklon-setovi",
     colors: [{ id: "crna", name: "Crna", hex: "#1b1b1b", image: "/products/kutija.jpg" }],
     prints: ["Lasersko graviranje", "Bez gravure"],
     locations: ["Poklopac"],
@@ -493,7 +438,8 @@ export const products: Product[] = [
     slug: "kc-02-privjesak",
     sku: "KC-02",
     name: "Privjesak otvarač",
-    category: "pokloni",
+    category: "pokloni-i-igre",
+    subcategory: "privjesci",
     colors: [{ id: "metal", name: "Metal", hex: "#9aa0a6", image: "/products/privjesak.jpg" }],
     prints: ["Lasersko graviranje", "UV tisak", "Bez tiska"],
     locations: ["Prednja ploha"],
@@ -510,16 +456,14 @@ export const products: Product[] = [
   },
 ];
 
-export function getCategory(slug: string) {
-  return categories.find((category) => category.slug === slug);
-}
-
 export function getProduct(slug: string) {
   return products.find((product) => product.slug === slug);
 }
 
-export function productsIn(slug: string) {
-  return products.filter((product) => product.category === slug);
+export function productsIn(category: string, subcategory?: string) {
+  return products.filter(
+    (product) => product.category === category && (!subcategory || product.subcategory === subcategory),
+  );
 }
 
 export function entryTier(product: Product) {
