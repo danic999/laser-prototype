@@ -30,10 +30,28 @@ const icons = [
   { href: "/kategorija/pokloni-i-igre/privjesci", label: "Privjesci", icon: Flag },
 ];
 
-const floaters = [
-  { slug: "k002-kemijska-metalna", src: "/products/olovka-crna.jpg", name: "Kemijska olovka", className: "left-[8%] top-8 -rotate-6" },
-  { slug: "sm-50-salica", src: "/products/salica.jpg", name: "Šalica", className: "left-1/2 top-0 z-10 -translate-x-1/2" },
-  { slug: "ki0294-shopping-torba", src: "/products/torba.jpg", name: "Shopping torba", className: "top-10 right-[8%] rotate-6" },
+const banners = [
+  {
+    href: "/#paketi",
+    image: "/products/kutija.jpg",
+    alt: "Božićni poklon set",
+    title: "Božićni promo",
+    className: "left-[8%] top-8 -rotate-6",
+  },
+  {
+    href: "/kategorija/slobodno-vrijeme/kisobrani",
+    image: "/products/kisobran.jpg",
+    alt: "Zimski kišobrani",
+    title: "Zimski asortiman",
+    className: "left-1/2 top-0 z-10 -translate-x-1/2",
+  },
+  {
+    href: "/usluge",
+    image: "/products/upaljac.jpg",
+    alt: "Tisak na upaljaču",
+    title: "Tisak u kući",
+    className: "top-10 right-[8%] rotate-6",
+  },
 ];
 
 export default function HomePage() {
@@ -42,17 +60,27 @@ export default function HomePage() {
   return (
     <main>
       <section className="mx-auto max-w-[1200px] px-4 pt-6 pb-16 sm:pt-10">
-        <div className="relative mx-auto hidden h-[300px] max-w-[760px] sm:block">
-          {floaters.map((item) => (
+        <div className="relative mx-auto mb-8 hidden h-[300px] max-w-[760px] sm:block">
+          {banners.map((banner) => (
             <Link
-              key={item.slug}
-              href={`/proizvod/${item.slug}`}
-              className={`absolute w-[190px] rounded-[28px] bg-white p-2 ${cardShadow} ${item.className}`}
+              key={banner.title}
+              href={banner.href}
+              className={`absolute w-[190px] rounded-[28px] bg-white p-2 ${cardShadow} ${banner.className}`}
             >
               <span className="relative block aspect-square overflow-hidden rounded-[20px] bg-canvas">
-                <Image src={item.src} alt="" fill className="object-contain" />
+                <Image src={banner.image} alt={banner.alt} fill sizes="190px" className="object-contain" />
               </span>
-              <span className="block px-2 py-2 text-[14px] font-medium tracking-[-0.014em]">{item.name}</span>
+              <span className="block px-2 py-2 text-[14px] font-medium tracking-[-0.014em]">{banner.title}</span>
+            </Link>
+          ))}
+        </div>
+        <div className="mb-6 flex justify-center gap-3 sm:hidden">
+          {banners.map((banner) => (
+            <Link key={banner.title} href={banner.href} className={`w-[104px] rounded-[20px] bg-white p-1.5 ${cardShadow}`}>
+              <span className="relative block aspect-square overflow-hidden rounded-[14px] bg-canvas">
+                <Image src={banner.image} alt={banner.alt} fill sizes="104px" className="object-contain" />
+              </span>
+              <span className="block px-1 py-1.5 text-[12px] leading-[1.2] font-medium tracking-[-0.014em]">{banner.title}</span>
             </Link>
           ))}
         </div>
