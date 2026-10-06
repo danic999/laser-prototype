@@ -12,9 +12,9 @@ export function QuoteForm() {
 
   if (sent) {
     return (
-      <div className="bg-mist p-8 sm:p-10">
-        <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">Upit je zabilježen lokalno</p>
-        <h2 className="mt-3 font-heading text-[clamp(2rem,4vw,3rem)] leading-[0.88] font-extrabold tracking-[0.02em]">Hvala. Ovo je kraj prototipa.</h2>
+      <div className="rounded-[28px] bg-white p-8 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]">
+        <p className="text-[12px] text-[#787574]">Upit je zabilježen lokalno</p>
+        <h2 className="mt-2 text-[28px] leading-[1.2] font-medium tracking-[-0.05em]">Hvala. Ovo je kraj prototipa.</h2>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
           Poruka nije poslana na veleprodaja@laser-bih.com. U pravom shopu ovdje nastaje ponuda:
           šifra, količina, tisak i kontakt firme odlaze prodaji, a kupac dobiva potvrdu.
@@ -31,7 +31,7 @@ export function QuoteForm() {
         setSent(true);
       }}
     >
-      <div className="space-y-4 bg-mist p-6 sm:p-10">
+      <div className="space-y-4 rounded-[28px] bg-white p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] sm:p-8">
         <Field label="Firma" name="firma" required />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Ime i prezime" name="ime" required />
@@ -60,15 +60,15 @@ export function QuoteForm() {
           Pošalji upit
         </button>
       </div>
-      <aside className="h-fit bg-bass p-6 text-[16px] leading-[1.5] text-white/80 sm:p-8">
-        <p className="font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em] text-white">Što prodaja dobije</p>
+      <aside className="h-fit rounded-[28px] bg-white p-6 text-[16px] leading-[1.33] text-[#787574] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]">
+        <p className="text-[20px] font-medium tracking-[-0.05em] text-black">Što prodaja dobije</p>
         <ul className="mt-3 space-y-2">
           <li>Firmu i kontakt</li>
           <li>Šifru, boju i količinu</li>
           <li>Tehniku i poziciju tiska</li>
           <li>Oznaku ako treba uzorak</li>
         </ul>
-        <p className="mt-6 text-[14px] text-white/70">
+        <p className="mt-6 text-[14px]">
           +387 39 830 773
           <br />
           veleprodaja@laser-bih.com

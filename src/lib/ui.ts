@@ -1,17 +1,15 @@
-export const btnOutline =
-  "inline-flex h-12 items-center justify-center rounded-[2px] border border-bass bg-white px-6 text-[16px] leading-normal font-medium tracking-[0.05em] text-bass uppercase transition-colors hover:bg-mist";
+export const cardShadow =
+  "shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]";
 
-export const btnFill =
-  "inline-flex h-12 items-center justify-center rounded-[2px] border border-bass bg-bass px-6 text-[16px] leading-normal font-medium tracking-[0.05em] text-white uppercase transition-colors hover:bg-black";
+export const btnPill =
+  "inline-flex h-10 items-center justify-center rounded-full border border-[#ebebeb] bg-white px-4 text-[16px] leading-[1.33] font-normal tracking-[-0.031em] text-black shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-colors hover:bg-[#f2f4f5]";
 
-export const btnOnDark =
-  "inline-flex h-12 items-center justify-center rounded-[2px] border border-white bg-white px-6 text-[16px] leading-normal font-medium tracking-[0.05em] text-bass uppercase transition-colors hover:bg-mist";
+export const btnFill = btnPill;
+export const btnOutline = btnPill;
+export const btnOnDark = btnPill;
 
-export const linkOnDark =
-  "inline-flex items-center gap-2 text-[16px] leading-normal font-medium tracking-[0.05em] text-white uppercase";
+export const pageTitle =
+  "text-[28px] leading-[1.2] font-medium tracking-[-0.05em] text-black";
 
-export const displayTitle =
-  "font-heading text-[clamp(2.5rem,6vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em] text-bass";
-
-export const heroTitle =
-  "font-heading text-[clamp(3.5rem,8vw,6rem)] leading-[0.88] font-extrabold tracking-[0.015em]";
+export const sectionTitle =
+  "inline-flex items-center gap-1 text-[20px] leading-[1.2] font-medium tracking-[-0.05em] text-black";

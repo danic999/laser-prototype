@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatKm, unitForQty } from "@/lib/catalog";
 import { getPackage, packageProducts, packageTotalLabel } from "@/lib/packages";
-import { btnFill, btnOutline, heroTitle } from "@/lib/ui";
+import { btnPill, pageTitle } from "@/lib/ui";
 
 export async function generateMetadata({
   params,
@@ -28,7 +28,7 @@ export default async function PackagePage({
   const quote = `/ponuda?artikal=${encodeURIComponent(item.name)}&kolicina=${item.qty}&napomena=${encodeURIComponent("Božićni paket")}`;
 
   return (
-    <main className="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 lg:py-16">
+    <main className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6">
       <p className="text-sm text-muted-foreground">
         <Link href="/#paketi" className="hover:underline">
           Božićni paketi
@@ -36,21 +36,21 @@ export default async function PackagePage({
         {" / "}
         {item.name}
       </p>
-      <p className="mt-6 text-[12px] tracking-[0.08em] text-charcoal uppercase">{item.season}</p>
-      <h1 className={`${heroTitle} mt-3 text-bass`}>{item.name}</h1>
+      <p className="mt-4 text-[12px] text-[#787574]">{item.season}</p>
+      <h1 className={`${pageTitle} mt-2`}>{item.name}</h1>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">{item.blurb}</p>
       <p className="mt-4 text-lg">
-        <span className="font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em]">{packageTotalLabel(item)}</span>
+        <span className="text-[20px] font-medium tracking-[-0.05em]">{packageTotalLabel(item)}</span>
         <span className="text-muted-foreground"> / set pri {item.qty} setova, bez PDV-a</span>
       </p>
       <ul className="mt-8 grid gap-4 sm:grid-cols-3">
         {included.map((product) => (
-          <li key={product.slug} className="bg-mist p-6">
+          <li key={product.slug} className="rounded-[28px] bg-white p-3 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]">
             <Link href={`/proizvod/${product.slug}`}>
-              <div className="relative aspect-square">
+              <div className="relative aspect-square overflow-hidden rounded-[20px] bg-canvas">
                 <Image src={product.colors[0].image} alt={product.name} fill className="object-contain" />
               </div>
-              <h2 className="mt-3 font-heading text-[24px] leading-[1.2] font-normal">{product.name}</h2>
+              <h2 className="mt-3 px-2 text-[16px] font-medium tracking-[-0.031em]">{product.name}</h2>
               <p className="text-sm text-muted-foreground">{product.sku}</p>
               <p className="mt-1 text-sm font-bold">{formatKm(unitForQty(product, item.qty))} / kom</p>
             </Link>
@@ -58,10 +58,10 @@ export default async function PackagePage({
         ))}
       </ul>
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link href={quote} className={btnFill}>
+        <Link href={quote} className={btnPill}>
           Zatraži ponudu za paket
         </Link>
-        <Link href="/#paketi" className={btnOutline}>
+        <Link href="/#paketi" className={btnPill}>
           Svi paketi
         </Link>
       </div>

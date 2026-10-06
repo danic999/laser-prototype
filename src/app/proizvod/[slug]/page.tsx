@@ -27,7 +27,7 @@ export default async function ProductPage({
   const related = relatedProducts(product);
 
   return (
-    <main className="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 lg:py-16">
+    <main className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6">
       <p className="text-sm text-muted-foreground">
         <Link href="/" className="hover:underline">
           Naslovnica
@@ -41,7 +41,7 @@ export default async function ProductPage({
       </p>
       <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-heading text-[clamp(2.5rem,5vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">{product.name}</h1>
+          <h1 className="text-[28px] leading-[1.2] font-medium tracking-[-0.05em]">{product.name}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Šifra {product.sku}
             {product.inStock ? " · Na zalihi" : " · Na upit"}
@@ -53,11 +53,11 @@ export default async function ProductPage({
       </div>
       <div className="mt-12 grid gap-10 border-t border-border pt-8 lg:grid-cols-2">
         <section>
-          <h2 className="font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em]">Opis</h2>
+          <h2 className="text-[20px] leading-[1.2] font-medium tracking-[-0.05em]">Opis</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{product.description}</p>
         </section>
         <section>
-          <h2 className="font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em]">Podaci</h2>
+          <h2 className="text-[20px] leading-[1.2] font-medium tracking-[-0.05em]">Podaci</h2>
           <dl className="mt-3 divide-y divide-border text-sm">
             {product.details.map((row) => (
               <div key={row.label} className="flex justify-between gap-4 py-2">
@@ -74,8 +74,8 @@ export default async function ProductPage({
       </div>
       {related.length > 0 ? (
         <section className="mt-12">
-          <h2 className="font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em]">Iz iste kategorije</h2>
-          <div className="mt-6 grid grid-cols-2 gap-px lg:grid-cols-3">
+          <h2 className="text-[20px] leading-[1.2] font-medium tracking-[-0.05em]">Iz iste kategorije</h2>
+          <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-3">
             {related.map((item) => (
               <ProductCard key={item.slug} product={item} />
             ))}

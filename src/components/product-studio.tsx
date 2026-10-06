@@ -33,22 +33,24 @@ export function ProductStudio({ product }: { product: Product }) {
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
       <div>
-        <div className="relative aspect-square overflow-hidden bg-mist">
-          <Image
-            src={color.image}
-            alt={`${product.name}, ${color.name}`}
-            fill
-            priority
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            className="object-contain mix-blend-multiply p-8"
-          />
+        <div className="rounded-[28px] bg-white p-2 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]">
+          <div className="relative aspect-square overflow-hidden rounded-[20px] bg-canvas">
+            <Image
+              src={color.image}
+              alt={`${product.name}, ${color.name}`}
+              fill
+              priority
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-contain"
+            />
+          </div>
         </div>
         <p className="mt-3 text-xs text-muted-foreground">
           Fotografija je bez logotipa. Dokaz s vašim znakom dolazi prije izrade.
         </p>
       </div>
-      <div className="bg-mist p-6 sm:p-10">
-        <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">Odabir</p>
+      <div className="rounded-[28px] bg-white p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] sm:p-8">
+        <p className="text-[12px] text-[#787574]">Odabir</p>
         <p className="mt-1 text-sm text-muted-foreground">
           Od {formatKm(product.tiers.at(-1)!.unit)} / kom pri{" "}
           {formatQty(product.tiers.at(-1)!.qty)} kom
@@ -79,7 +81,7 @@ export function ProductStudio({ product }: { product: Product }) {
                 key={item}
                 type="button"
                 onClick={() => setPrint(item)}
-                className={`rounded-[2px] border px-4 py-2 text-[14px] ${item === print ? "border-bass bg-bass text-white" : "border-steel bg-white"}`}
+                className={`rounded-full border px-4 py-2 text-[14px] tracking-[-0.014em] ${item === print ? "border-transparent bg-black text-white" : "border-[#ebebeb] bg-white"}`}
               >
                 {item}
               </button>
@@ -95,7 +97,7 @@ export function ProductStudio({ product }: { product: Product }) {
                 key={item}
                 type="button"
                 onClick={() => setLocation(item)}
-                className={`rounded-[2px] border px-4 py-2 text-[14px] ${item === location ? "border-bass bg-white" : "border-steel bg-white"}`}
+                className={`rounded-full border px-4 py-2 text-[14px] tracking-[-0.014em] ${item === location ? "border-black bg-white" : "border-[#ebebeb] bg-white"}`}
               >
                 {item}
               </button>
@@ -117,7 +119,7 @@ export function ProductStudio({ product }: { product: Product }) {
               />
             </label>
           </div>
-          <div className="mt-3 divide-y divide-steel border border-steel bg-white">
+          <div className="mt-3 divide-y divide-[#ebebeb] overflow-hidden rounded-[20px] border border-[#ebebeb] bg-white">
             {product.tiers.map((tier) => {
               const active = safeQty >= tier.qty && (product.tiers.find((next) => next.qty > tier.qty)?.qty ?? Infinity) > safeQty;
               const cut = savings(product, tier.unit);
@@ -126,7 +128,7 @@ export function ProductStudio({ product }: { product: Product }) {
                   key={tier.qty}
                   type="button"
                   onClick={() => setQty(tier.qty)}
-                  className={`flex w-full items-center justify-between px-4 py-3 text-left text-[14px] ${active ? "bg-bass text-white" : "hover:bg-mist"}`}
+                  className={`flex w-full items-center justify-between px-4 py-3 text-left text-[14px] tracking-[-0.014em] ${active ? "bg-black text-white" : "hover:bg-canvas"}`}
                 >
                   <span>{formatQty(tier.qty)} kom</span>
                   <span className="flex items-center gap-3">
@@ -142,7 +144,7 @@ export function ProductStudio({ product }: { product: Product }) {
         <div className="mt-5 flex items-end justify-between">
           <div>
             <p className="text-xs text-muted-foreground">Ukupno bez PDV-a</p>
-            <p className="font-heading text-[clamp(2rem,4vw,3rem)] leading-[0.88] font-extrabold tracking-[0.02em]">{formatKm(total)}</p>
+            <p className="text-[28px] leading-[1.2] font-medium tracking-[-0.05em]">{formatKm(total)}</p>
             <p className="text-sm text-muted-foreground">
               {formatKm(unit)} / kom
               {save > 0 ? ` · ušteda ${save}% u odnosu na minimum` : null}
@@ -159,7 +161,7 @@ export function ProductStudio({ product }: { product: Product }) {
           </Link>
         </div>
         <p className="mt-4 text-[16px]">
-          <Link href="/usluge" className="text-chord">
+          <Link href="/usluge" className="underline">
             Tehnike tiska u kući
           </Link>
         </p>

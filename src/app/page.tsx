@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 import {
   Backpack,
   CupSoda,
@@ -10,79 +11,65 @@ import {
   ShoppingBag,
   Umbrella,
 } from "lucide-react";
-import { ProductRail } from "@/components/product-rail";
+import { Logo } from "@/components/logo";
+import { ProductCard } from "@/components/product-card";
+import { SearchBar } from "@/components/search-bar";
 import { products } from "@/lib/catalog";
 import { packageProducts, packages, packageTotalLabel } from "@/lib/packages";
-import { btnOnDark, btnOutline, displayTitle, heroTitle, linkOnDark } from "@/lib/ui";
+import { btnPill, cardShadow, sectionTitle } from "@/lib/ui";
 
 const icons = [
   { href: "/kategorija/pisaci-pribor/kemijske-olovke", label: "Olovke", icon: PenLine },
-  { href: "/kategorija/torbe-i-putovanja/shopping-torbe", label: "Shopping torbe", icon: ShoppingBag },
+  { href: "/kategorija/torbe-i-putovanja/shopping-torbe", label: "Torbe", icon: ShoppingBag },
   { href: "/kategorija/posude-za-pice/boce-za-vodu", label: "Boce", icon: CupSoda },
   { href: "/kategorija/posude-za-pice/salice", label: "Šalice", icon: CupSoda },
   { href: "/kategorija/torbe-i-putovanja/ruksaci", label: "Ruksaci", icon: Backpack },
   { href: "/kategorija/odjeca-i-dodaci/majice", label: "Majice", icon: Shirt },
-  { href: "/kategorija/posude-za-pice/termosice", label: "Termosice", icon: CupSoda },
   { href: "/kategorija/slobodno-vrijeme/kisobrani", label: "Kišobrani", icon: Umbrella },
-  { href: "/kategorija/pokloni-i-igre/privjesci", label: "Privjesci", icon: Flag },
-  { href: "/kategorija/ured-i-poslovanje/biljeznice", label: "Bilježnice", icon: PenLine },
-  { href: "/kategorija/torbe-i-putovanja/rashladne-torbe", label: "Rashladne torbe", icon: Backpack },
-  { href: "/kategorija/odjeca-i-dodaci/jakne", label: "Jakne", icon: Shirt },
-  { href: "/kategorija/ured-i-poslovanje/mape", label: "Mape", icon: Flag },
-  { href: "/kategorija/dom-i-stanovanje/kuhinja", label: "Kuhinja", icon: CupSoda },
   { href: "/kategorija/pokloni-i-igre/upaljaci", label: "Upaljači", icon: Flame },
-  { href: "/kategorija/tehnologija/usb", label: "USB", icon: Flag },
+  { href: "/kategorija/pokloni-i-igre/privjesci", label: "Privjesci", icon: Flag },
+];
+
+const floaters = [
+  { slug: "k002-kemijska-metalna", src: "/products/olovka-crna.jpg", name: "Kemijska olovka", className: "left-[8%] top-8 -rotate-6" },
+  { slug: "sm-50-salica", src: "/products/salica.jpg", name: "Šalica", className: "left-1/2 top-0 z-10 -translate-x-1/2" },
+  { slug: "ki0294-shopping-torba", src: "/products/torba.jpg", name: "Shopping torba", className: "top-10 right-[8%] rotate-6" },
 ];
 
 export default function HomePage() {
-  const featured = products.filter((product) => product.featured);
+  const featured = products.filter((product) => product.featured).slice(0, 4);
 
   return (
-    <main className="bg-white">
-      <section className="relative bg-mist">
-        <div className="relative h-[48vh] min-h-[300px] lg:absolute lg:inset-0 lg:h-auto">
-          <Image
-            src="/products/kisobran.jpg"
-            alt="Golf kišobran za zimski asortiman"
-            fill
-            priority
-            sizes="100vw"
-            className="origin-center scale-[1.35] object-cover object-[center_62%] mix-blend-multiply lg:scale-100 lg:object-[62%_center]"
-          />
+    <main>
+      <section className="mx-auto max-w-[1200px] px-4 pt-6 pb-16 sm:pt-10">
+        <div className="relative mx-auto hidden h-[300px] max-w-[760px] sm:block">
+          {floaters.map((item) => (
+            <Link
+              key={item.slug}
+              href={`/proizvod/${item.slug}`}
+              className={`absolute w-[190px] rounded-[28px] bg-white p-2 ${cardShadow} ${item.className}`}
+            >
+              <span className="relative block aspect-square overflow-hidden rounded-[20px] bg-canvas">
+                <Image src={item.src} alt="" fill className="object-contain" />
+              </span>
+              <span className="block px-2 py-2 text-[14px] font-medium tracking-[-0.014em]">{item.name}</span>
+            </Link>
+          ))}
         </div>
-        <div className="relative z-10 flex lg:min-h-[88vh] lg:items-end">
-          <div className="w-full bg-bass px-6 py-10 text-white sm:px-10 sm:py-14 lg:w-[46%] lg:px-16 lg:py-16">
-            <p className="text-[24px] leading-[1.5] font-medium">Sezona poklona</p>
-            <h1 className={`${heroTitle} mt-3`}>
-              Božićni
-              <br />
-              promo
-            </h1>
-            <p className="mt-6 max-w-md text-[16px] leading-[1.5] text-white/80">
-              Setovi za klijente, tim i partnere. Olovka, šalica, boca i tisak idu u istoj narudžbi.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-6">
-              <Link href="/#paketi" className={btnOnDark}>
-                Otvori pakete
-              </Link>
-              <Link href="/kategorija/slobodno-vrijeme/kisobrani" className={linkOnDark}>
-                Zimski asortiman
-                <span aria-hidden>→</span>
-              </Link>
-            </div>
-          </div>
+        <div className="hidden justify-center sm:flex">
+          <Logo className="[&_img]:h-10" />
         </div>
-      </section>
-
-      <section className="bg-porcelain">
-        <ul className="mx-auto grid max-w-[1440px] grid-cols-4 gap-y-8 px-4 py-10 sm:px-6 sm:grid-cols-8">
+        <SearchBar className="mx-auto mt-6 max-w-[640px]" />
+        <ul className="mt-6 flex justify-start gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-center [scrollbar-width:none]">
           {icons.map((item) => (
-            <li key={item.label}>
+            <li key={item.label} className="shrink-0">
               <Link
                 href={item.href}
-                className="flex flex-col items-center gap-3 text-center text-[12px] leading-[1.33] tracking-[0.04em] text-bass uppercase"
+                className="inline-flex items-center gap-2 rounded-full border border-[#ebebeb] bg-white py-1.5 pr-4 pl-1.5 text-[16px] tracking-[-0.031em] text-black shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
               >
-                <item.icon className="size-6" strokeWidth={1} />
+                <span className="flex size-7 items-center justify-center rounded-full bg-canvas">
+                  <item.icon className="size-4" strokeWidth={1.75} />
+                </span>
                 {item.label}
               </Link>
             </li>
@@ -90,86 +77,53 @@ export default function HomePage() {
         </ul>
       </section>
 
-      <section className="grid md:grid-cols-2">
-        <Link href="/kategorija/posude-za-pice/salice" className="group relative min-h-[520px] bg-mist">
-          <Image src="/products/salica.jpg" alt="" fill sizes="50vw" className="object-contain p-16 mix-blend-multiply" />
-          <div className="absolute bottom-8 left-6 max-w-md text-white sm:left-10">
-            <div className="bg-bass px-6 py-8 sm:px-8">
-              <h2 className="font-heading text-[clamp(2.5rem,4vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">
-                Šalice
-              </h2>
-              <p className="mt-3 text-[16px] leading-[1.5] text-white/80">Sublimacija za firmu, u boji.</p>
-              <span className={`${btnOnDark} mt-6`}>Otvori</span>
-            </div>
-          </div>
+      <section id="paketi" className="mx-auto max-w-[1200px] px-4 pb-16">
+        <Link href="/#paketi" className={sectionTitle}>
+          Božićni promo paketi
+          <ChevronRight className="size-4" />
         </Link>
-        <Link href="/kategorija/torbe-i-putovanja/shopping-torbe" className="relative min-h-[520px] bg-porcelain">
-          <Image src="/products/torba.jpg" alt="" fill sizes="50vw" className="object-contain p-16 mix-blend-multiply" />
-          <div className="absolute right-6 bottom-8 left-6 max-w-md sm:left-10">
-            <div className="bg-bass px-6 py-8 text-white sm:px-8">
-              <h2 className="font-heading text-[clamp(2.5rem,4vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">
-                Torbe
-              </h2>
-              <p className="mt-3 text-[16px] leading-[1.5] text-white/80">Shopping, laptop i rashladne.</p>
-              <span className={`${btnOnDark} mt-6`}>Otvori</span>
-            </div>
-          </div>
-        </Link>
-      </section>
-
-      <section id="paketi" className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 lg:py-[120px]">
-        <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">Božić 2026</p>
-        <h2 className={`${displayTitle} mt-3 max-w-3xl`}>Božićni promo paketi</h2>
-        <p className="mt-4 max-w-xl text-[16px] leading-[1.5] text-charcoal">
+        <p className="mt-2 max-w-xl text-[16px] leading-[1.33] text-[#787574]">
           Složeni setovi od artikala koji su već u ponudi. Cijena je primjer po setu, bez PDV-a.
         </p>
-        <div className="mt-12 grid gap-px bg-white sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {packages.map((item) => {
             const included = packageProducts(item);
             return (
-              <article key={item.slug} className="flex flex-col bg-mist p-8 sm:p-10">
-                <p className="text-[12px] tracking-[0.08em] uppercase">{item.season}</p>
-                <div className="mt-6 flex h-28 items-center gap-2">
+              <article key={item.slug} className={`flex flex-col rounded-[28px] bg-white ${cardShadow}`}>
+                <div className="flex gap-0.5 p-2">
                   {included.slice(0, 3).map((product) => (
-                    <Image
-                      key={product.slug}
-                      src={product.colors[0].image}
-                      alt=""
-                      width={96}
-                      height={96}
-                      className="size-24 object-contain"
-                    />
+                    <span key={product.slug} className="relative aspect-square flex-1 overflow-hidden rounded-[20px] bg-canvas">
+                      <Image src={product.colors[0].image} alt="" fill className="object-contain" />
+                    </span>
                   ))}
                 </div>
-                <h3 className="mt-6 font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em]">{item.name}</h3>
-                <p className="mt-3 text-[16px] leading-[1.5] text-charcoal">{item.blurb}</p>
-                <p className="mt-6 text-[16px]">
-                  <span className="font-medium">{packageTotalLabel(item)}</span>
-                  <span className="text-charcoal"> / set · {item.qty} setova</span>
-                </p>
-                <Link href={`/paket/${item.slug}`} className={`${btnOutline} mt-8 w-fit`}>
-                  Složi paket
-                </Link>
+                <div className="flex flex-1 flex-col px-4 pt-2 pb-4">
+                  <p className="text-[12px] text-[#787574]">{item.season}</p>
+                  <h3 className="mt-1 text-[16px] font-medium tracking-[-0.031em]">{item.name}</h3>
+                  <p className="mt-1 text-[14px] leading-[1.4] text-[#787574]">{item.blurb}</p>
+                  <p className="mt-3 text-[16px] tracking-[-0.031em]">
+                    {packageTotalLabel(item)}
+                    <span className="text-[#787574]"> / set · {item.qty}</span>
+                  </p>
+                  <Link href={`/paket/${item.slug}`} className={`${btnPill} mt-4 w-fit`}>
+                    Složi paket
+                  </Link>
+                </div>
               </article>
             );
           })}
         </div>
-        <p className="mt-8 text-[16px]">
-          <Link href="/o-nama" className="text-chord">
-            Kako firma naručuje
-          </Link>
-        </p>
       </section>
 
-      <section id="najprodavanije" className="border-t border-steel">
-        <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 lg:py-[120px]">
-          <h2 className={displayTitle}>Najprodavanije</h2>
-          <p className="mt-4 max-w-xl text-[16px] leading-[1.5] text-charcoal">
-            Šifre iz stalnog asortimana. Cijena „od“ vrijedi na najnižem pragu količine.
-          </p>
-          <div className="mt-12">
-            <ProductRail products={featured} />
-          </div>
+      <section id="najprodavanije" className="mx-auto max-w-[1200px] px-4 pb-8">
+        <Link href="/kategorija/pisaci-pribor" className={sectionTitle}>
+          Najprodavanije
+          <ChevronRight className="size-4" />
+        </Link>
+        <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {featured.map((product) => (
+            <ProductCard key={product.slug} product={product} />
+          ))}
         </div>
       </section>
     </main>

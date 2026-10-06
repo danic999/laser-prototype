@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Dosis } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
-const dosis = Dosis({
+const inter = Inter({
   subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "800"],
-  variable: "--font-dosis",
+  weight: ["400", "500"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -21,11 +21,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bs" className={`${dosis.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col bg-white font-sans text-bass">
+    <html lang="bs" className={`${inter.variable} h-full antialiased`}>
+      <body className="min-h-full bg-canvas font-sans text-black">
         <SiteHeader />
-        {children}
-        <SiteFooter />
+        <div className="flex min-h-full flex-col lg:pl-16">
+          {children}
+          <SiteFooter />
+        </div>
       </body>
     </html>
   );
