@@ -5,9 +5,9 @@ export const metadata: Metadata = { title: "O nama" };
 
 export default function AboutPage() {
   return (
-    <main className="mx-auto max-w-[760px] px-4 py-10 sm:px-6">
-      <p className="text-xs tracking-[0.16em] text-muted-foreground uppercase">LASER d.o.o.</p>
-      <h1 className="mt-2 font-heading text-4xl font-medium tracking-tight">O nama</h1>
+    <main className="mx-auto max-w-[760px] px-4 py-12 sm:px-6 lg:py-16">
+      <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">LASER d.o.o.</p>
+      <h1 className="mt-3 font-heading text-[clamp(2.5rem,5vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">O nama</h1>
       <div className="mt-6 space-y-4 text-sm leading-relaxed text-muted-foreground">
         <p>
           LASER d.o.o. za proizvodnju, trgovinu i usluge bavi se uvozom i distribucijom promotivnih
@@ -24,7 +24,7 @@ export default function AboutPage() {
           izrada pečata. Uzorak, prezentaciju i prijedlog seta moguće je zatražiti prije veće narudžbe.
         </p>
       </div>
-      <dl className="mt-8 grid gap-4 rounded-2xl border border-border bg-card p-5 text-sm sm:grid-cols-2">
+      <dl className="mt-10 grid gap-6 bg-mist p-8 text-[16px] sm:grid-cols-2">
         <div>
           <dt className="text-muted-foreground">Adresa</dt>
           <dd>Međugorska 26, 88320 Ljubuški</dd>
@@ -47,7 +47,7 @@ export default function AboutPage() {
         </div>
       </dl>
       <p className="mt-6 text-sm">
-        <Link href="/ponuda" className="underline underline-offset-4">
+        <Link href="/ponuda" className="text-chord">
           Zatraži ponudu ili uzorak
         </Link>
       </p>

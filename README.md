@@ -1,6 +1,6 @@
 # LASER veleprodaja — prototip izgleda
 
-Pregled novog B2B shopa za [LASER d.o.o.](https://laser-bih.com/), Ljubuški. Raspored prati veleprodajni katalog (kategorije, filter, kartica s cijenom po količini, konfigurator, upit za ponudu). Sadržaj i fotografije su s postojećeg weba.
+Pregled novog B2B shopa za [LASER d.o.o.](https://laser-bih.com/), Ljubuški. Kategorije prate veleprodajni katalog. Površina je crno-bijela: Dosis za naslove, Arial za sučelje, ravne kartice i fotografija artikla na sivoj pločici. Sadržaj i fotografije su s postojećeg weba.
 
 Ljestvice cijena su **primjer rasporeda**, ne službeni cjenik. Na laser-bih.com cijene traže prijavu.
 

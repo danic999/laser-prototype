@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatKm, formatQty, savings, unitForQty, type Product } from "@/lib/catalog";
-import { Button } from "@/components/ui/button";
+import { btnFill, btnOutline } from "@/lib/ui";
 
 export function ProductStudio({ product }: { product: Product }) {
   const [colorId, setColorId] = useState(product.colors[0].id);
@@ -33,22 +33,22 @@ export function ProductStudio({ product }: { product: Product }) {
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
       <div>
-        <div className="relative aspect-square overflow-hidden rounded-2xl border border-border bg-white">
+        <div className="relative aspect-square overflow-hidden bg-mist">
           <Image
             src={color.image}
             alt={`${product.name}, ${color.name}`}
             fill
             priority
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="object-contain p-8"
+            className="object-contain mix-blend-multiply p-8"
           />
         </div>
         <p className="mt-3 text-xs text-muted-foreground">
           Fotografija je bez logotipa. Dokaz s vašim znakom dolazi prije izrade.
         </p>
       </div>
-      <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-        <p className="text-xs tracking-[0.14em] text-muted-foreground uppercase">Odabir</p>
+      <div className="bg-mist p-6 sm:p-10">
+        <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">Odabir</p>
         <p className="mt-1 text-sm text-muted-foreground">
           Od {formatKm(product.tiers.at(-1)!.unit)} / kom pri{" "}
           {formatQty(product.tiers.at(-1)!.qty)} kom
@@ -62,10 +62,10 @@ export function ProductStudio({ product }: { product: Product }) {
                 key={item.id}
                 type="button"
                 onClick={() => setColorId(item.id)}
-                className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm ${item.id === color.id ? "border-ink" : "border-border"}`}
+                className={`inline-flex size-12 items-center justify-center rounded-full border bg-mist ${item.id === color.id ? "border-bass" : "border-steel"}`}
+                aria-label={item.name}
               >
-                <span className="size-3 rounded-full border border-black/15" style={{ background: item.hex }} />
-                {item.name}
+                <span className="size-5 rounded-full border border-black/15" style={{ background: item.hex }} />
               </button>
             ))}
           </div>
@@ -79,7 +79,7 @@ export function ProductStudio({ product }: { product: Product }) {
                 key={item}
                 type="button"
                 onClick={() => setPrint(item)}
-                className={`rounded-full border px-3 py-1.5 text-sm ${item === print ? "border-navy bg-navy text-white" : "border-border"}`}
+                className={`rounded-[2px] border px-4 py-2 text-[14px] ${item === print ? "border-bass bg-bass text-white" : "border-steel bg-white"}`}
               >
                 {item}
               </button>
@@ -95,7 +95,7 @@ export function ProductStudio({ product }: { product: Product }) {
                 key={item}
                 type="button"
                 onClick={() => setLocation(item)}
-                className={`rounded-full border px-3 py-1.5 text-sm ${item === location ? "border-ink" : "border-border"}`}
+                className={`rounded-[2px] border px-4 py-2 text-[14px] ${item === location ? "border-bass bg-white" : "border-steel bg-white"}`}
               >
                 {item}
               </button>
@@ -113,11 +113,11 @@ export function ProductStudio({ product }: { product: Product }) {
                 min={product.minQty}
                 value={qty}
                 onChange={(event) => setQty(Number(event.target.value))}
-                className="ml-2 h-9 w-24 rounded-lg border border-border bg-background px-2 text-foreground"
+                className="ml-2 h-12 w-28 rounded-full border border-steel bg-white px-4 text-bass"
               />
             </label>
           </div>
-          <div className="mt-3 divide-y divide-border overflow-hidden rounded-xl border border-border">
+          <div className="mt-3 divide-y divide-steel border border-steel bg-white">
             {product.tiers.map((tier) => {
               const active = safeQty >= tier.qty && (product.tiers.find((next) => next.qty > tier.qty)?.qty ?? Infinity) > safeQty;
               const cut = savings(product, tier.unit);
@@ -126,11 +126,11 @@ export function ProductStudio({ product }: { product: Product }) {
                   key={tier.qty}
                   type="button"
                   onClick={() => setQty(tier.qty)}
-                  className={`flex w-full items-center justify-between px-3 py-2.5 text-left text-sm ${active ? "bg-navy text-white" : "hover:bg-muted"}`}
+                  className={`flex w-full items-center justify-between px-4 py-3 text-left text-[14px] ${active ? "bg-bass text-white" : "hover:bg-mist"}`}
                 >
                   <span>{formatQty(tier.qty)} kom</span>
                   <span className="flex items-center gap-3">
-                    {cut > 0 ? <span className={active ? "text-white/70" : "text-stock"}>−{cut}%</span> : null}
+                    {cut > 0 ? <span className={active ? "text-white/70" : "text-charcoal"}>−{cut}%</span> : null}
                     <span className="font-medium">{formatKm(tier.unit)}</span>
                   </span>
                 </button>
@@ -142,7 +142,7 @@ export function ProductStudio({ product }: { product: Product }) {
         <div className="mt-5 flex items-end justify-between">
           <div>
             <p className="text-xs text-muted-foreground">Ukupno bez PDV-a</p>
-            <p className="font-heading text-3xl font-medium">{formatKm(total)}</p>
+            <p className="font-heading text-[clamp(2rem,4vw,3rem)] leading-[0.88] font-extrabold tracking-[0.02em]">{formatKm(total)}</p>
             <p className="text-sm text-muted-foreground">
               {formatKm(unit)} / kom
               {save > 0 ? ` · ušteda ${save}% u odnosu na minimum` : null}
@@ -150,18 +150,19 @@ export function ProductStudio({ product }: { product: Product }) {
           </div>
         </div>
         <p className="mt-3 text-sm">Rok: {product.lead}.</p>
-        <div className="mt-5 flex flex-col gap-2">
-          <Button render={<Link href={quoteHref} />} className="h-11 rounded-full bg-stock text-white hover:bg-stock/90">
+        <div className="mt-6 flex flex-col gap-3">
+          <Link href={quoteHref} className={btnFill}>
             Zatraži ponudu
-          </Button>
-          <Button
-            variant="outline"
-            render={<Link href={`${quoteHref}&uzorak=1`} />}
-            className="h-11"
-          >
+          </Link>
+          <Link href={`${quoteHref}&uzorak=1`} className={btnOutline}>
             Zatraži uzorak
-          </Button>
+          </Link>
         </div>
+        <p className="mt-4 text-[16px]">
+          <Link href="/usluge" className="text-chord">
+            Tehnike tiska u kući
+          </Link>
+        </p>
         <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
           Ljestvica je primjer rasporeda cijena u prototipu. Službeni iznos i dalje potvrđuje veleprodaja.
           Dokaz tiska prije serije je predloženi korak novog shopa.

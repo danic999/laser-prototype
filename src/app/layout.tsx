@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Dosis } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
-const montserrat = Montserrat({
+const dosis = Dosis({
   subsets: ["latin", "latin-ext"],
-  variable: "--font-source",
+  weight: ["400", "500", "800"],
+  variable: "--font-dosis",
 });
 
 export const metadata: Metadata = {
@@ -20,8 +21,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bs" className={`${montserrat.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col bg-white text-foreground">
+    <html lang="bs" className={`${dosis.variable} h-full antialiased`}>
+      <body className="flex min-h-full flex-col bg-white font-sans text-bass">
         <SiteHeader />
         {children}
         <SiteFooter />

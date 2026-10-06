@@ -60,7 +60,7 @@ export function CatalogView({
   const filters = (
     <div className="space-y-6">
       <div>
-        <p className="text-xs font-bold tracking-[0.14em] text-muted-foreground uppercase">
+        <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">
           {category ? "Podkategorije" : "Kategorije"}
         </p>
         <ul className="mt-2 space-y-1">
@@ -69,7 +69,7 @@ export function CatalogView({
               <li>
                 <a
                   href={`/kategorija/${category.slug}`}
-                  className={`block rounded-md px-2 py-1.5 text-sm ${!activeSub ? "bg-navy text-white" : "hover:bg-muted"}`}
+                  className={`block px-2 py-1.5 text-[14px] ${!activeSub ? "bg-bass text-white" : "hover:bg-mist"}`}
                 >
                   Sve u kategoriji
                 </a>
@@ -78,7 +78,7 @@ export function CatalogView({
                 <li key={sub.slug}>
                   <a
                     href={`/kategorija/${category.slug}/${sub.slug}`}
-                    className={`block rounded-md px-2 py-1.5 text-sm ${activeSub === sub.slug ? "bg-navy text-white" : "hover:bg-muted"}`}
+                    className={`block px-2 py-1.5 text-[14px] ${activeSub === sub.slug ? "bg-bass text-white" : "hover:bg-mist"}`}
                   >
                     {sub.name}
                   </a>
@@ -88,7 +88,7 @@ export function CatalogView({
           ) : (
             categories.map((item) => (
               <li key={item.slug}>
-                <a href={`/kategorija/${item.slug}`} className="block rounded-md px-2 py-1.5 text-sm hover:bg-muted">
+                <a href={`/kategorija/${item.slug}`} className="block px-2 py-1.5 text-[14px] hover:bg-mist">
                   {item.name}
                 </a>
               </li>
@@ -97,7 +97,7 @@ export function CatalogView({
         </ul>
       </div>
       <div>
-        <p className="text-xs tracking-[0.14em] text-muted-foreground uppercase">Tisak</p>
+        <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">Tisak</p>
         <div className="mt-2 flex flex-col gap-1">
           <FilterButton active={print == null} onClick={() => setPrint(null)}>
             Sve tehnike
@@ -110,7 +110,7 @@ export function CatalogView({
         </div>
       </div>
       <div>
-        <p className="text-xs tracking-[0.14em] text-muted-foreground uppercase">
+        <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">
           Cijena od minimuma
         </p>
         <div className="mt-2 flex flex-col gap-1">
@@ -134,12 +134,12 @@ export function CatalogView({
   );
 
   return (
-    <div className="mx-auto grid max-w-[1180px] gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[220px_1fr]">
+    <div className="mx-auto grid max-w-[1440px] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[240px_1fr] lg:py-16">
       <aside className="hidden lg:block">{filters}</aside>
       <div>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-heading text-3xl font-medium tracking-tight">{title}</h1>
+            <h1 className="font-heading text-[clamp(2rem,4vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">{title}</h1>
             {intro ? <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">{intro}</p> : null}
             {query ? (
               <p className="mt-2 text-sm">
@@ -149,11 +149,11 @@ export function CatalogView({
           </div>
           <div className="flex items-center gap-2">
             <Sheet>
-              <SheetTrigger className="inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-card px-3 text-sm lg:hidden">
+              <SheetTrigger className="inline-flex h-12 items-center gap-2 rounded-[2px] border border-bass bg-white px-4 text-[14px] tracking-[0.05em] uppercase lg:hidden">
                 <SlidersHorizontal className="size-4" />
                 Filteri
               </SheetTrigger>
-              <SheetContent side="left" className="w-[min(100%,20rem)] bg-paper">
+              <SheetContent side="left" className="w-[min(100%,20rem)] bg-white">
                 <SheetHeader>
                   <SheetTitle>Filteri</SheetTitle>
                 </SheetHeader>
@@ -165,7 +165,7 @@ export function CatalogView({
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value)}
-                className="h-10 rounded-lg border border-border bg-card px-3"
+                className="h-12 rounded-full border border-steel bg-mist px-4"
               >
                 <option value="preporuceno">Preporučeno</option>
                 <option value="cijena">Cijena, od niže</option>
@@ -176,7 +176,7 @@ export function CatalogView({
         </div>
         <p className="mt-4 text-sm text-muted-foreground">{visible.length} artikala</p>
         {visible.length === 0 ? (
-          <div className="mt-8 rounded-xl border border-dashed border-border bg-card px-6 py-12 text-center">
+          <div className="mt-8 bg-mist px-6 py-16 text-center">
             <p className="font-medium">U ovoj grani pregleda nema Laser artikla.</p>
             <p className="mt-2 text-sm text-muted-foreground">
               Kategorije su iste kao na IGO katalogu. Artikli su iz asortimana LASER d.o.o.
@@ -186,7 +186,7 @@ export function CatalogView({
             </Button>
           </div>
         ) : (
-          <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
+          <div className="mt-8 grid grid-cols-2 gap-px lg:grid-cols-3 xl:grid-cols-4">
             {visible.map((product) => (
               <ProductCard key={product.slug} product={product} />
             ))}
@@ -210,7 +210,7 @@ function FilterButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-md px-2 py-1.5 text-left text-sm ${active ? "bg-navy text-white" : "hover:bg-muted"}`}
+      className={`px-2 py-1.5 text-left text-[14px] ${active ? "bg-bass text-white" : "hover:bg-mist"}`}
     >
       {children}
     </button>

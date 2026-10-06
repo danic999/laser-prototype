@@ -1,72 +1,77 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { btnFill, btnOnDark, btnOutline } from "@/lib/ui";
 
 export const metadata: Metadata = { title: "Brand guide" };
 
 const colors = [
-  { name: "Crna", hex: "#141414", role: "Tekst, glavni gumbi, podnožje" },
-  { name: "Papir", hex: "#F4F1EA", role: "Pozadina stranice" },
-  { name: "Kartica", hex: "#FFFCF8", role: "Površina kartica i obrazaca" },
-  { name: "Linija", hex: "#E3DCD0", role: "Okviri i razdjelnice" },
-  { name: "Laser", hex: "#E2231A", role: "Zraka u znaku i jedan poziv na ponudu" },
-  { name: "Tinta", hex: "#5C574F", role: "Pomoćni tekst" },
+  { name: "Soprano White", hex: "#ffffff", role: "Platno stranice, zaglavlje, podnožje" },
+  { name: "Studio Mist", hex: "#f8f8f8", role: "Pločice artikala, pretraga, tihe površine" },
+  { name: "Warm Porcelain", hex: "#f1efee", role: "Sekundarna navigacija" },
+  { name: "Bass Black", hex: "#131317", role: "Tekst, ikone, obrubi, tamni gumbi" },
+  { name: "Countertenor Gray", hex: "#b4bec7", role: "Traka obavijesti" },
+  { name: "Steel Gray", hex: "#949494", role: "Tanke razdjelnice" },
+  { name: "Charcoal Helper", hex: "#40464b", role: "Pomoćni tekst i linkovi u podnožju" },
+  { name: "Chord Blue", hex: "#005bff", role: "Samo tekstualni link za objašnjenje" },
+  { name: "Laser", hex: "#E2231A", role: "Zraka u znaku. Ne ide na gumbe." },
 ];
 
 export default function BrandPage() {
   return (
     <main>
-      <section className="border-b border-border bg-card">
-        <div className="mx-auto grid max-w-[1180px] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_1fr] lg:items-center">
+      <section className="border-b border-steel bg-white">
+        <div className="mx-auto grid max-w-[1440px] gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1fr] lg:items-end lg:py-[120px]">
           <div>
-            <p className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Brand guide · web</p>
-            <h1 className="mt-2 font-heading text-4xl font-medium tracking-tight sm:text-5xl">
-              Znak ostaje. Web dobiva ritam.
+            <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">Brand guide · web</p>
+            <h1 className="mt-3 font-heading text-[clamp(3rem,7vw,6rem)] leading-[0.88] font-extrabold tracking-[0.015em]">
+              Znak ostaje.
+              <br />
+              Shop je tih.
             </h1>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Slova i crvena zraka su iz postojećeg logotipa. Dorada je samo čist izrez, prozirna
-              pozadina i bijela inačica za tamnu podlogu. Oblik slova nije crtan iznova.
+            <p className="mt-6 max-w-md text-[16px] leading-[1.5] text-charcoal">
+              Slova i crvena zraka su iz postojećeg logotipa. Dorada je samo čist izrez. Oblik slova nije crtan iznova. Okvir shopa je crno-bijeli.
             </p>
           </div>
-          <div className="flex flex-col gap-3">
-            <div className="flex h-36 items-center justify-center rounded-2xl bg-paper">
-              <Image src="/brand/logo.png" alt="LASER na papiru" width={280} height={92} />
+          <div className="flex flex-col gap-px bg-steel">
+            <div className="flex h-40 items-center justify-center bg-white">
+              <Image src="/brand/logo.png" alt="LASER na bijeloj" width={280} height={92} />
             </div>
-            <div className="flex h-36 items-center justify-center rounded-2xl bg-ink">
+            <div className="flex h-40 items-center justify-center bg-bass">
               <Image src="/brand/logo-light.png" alt="LASER na crnoj" width={280} height={92} />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1180px] px-4 py-12 sm:px-6">
-        <h2 className="font-heading text-2xl font-medium">Znak</h2>
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
+      <section className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 lg:py-[120px]">
+        <h2 className="font-heading text-[clamp(2rem,4vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">Znak</h2>
+        <div className="mt-10 grid gap-px bg-white md:grid-cols-3">
           <Rule title="Zraka ide kroz LA">
-            Crvena linija počinje lijevo od L i staje u A. Ne produžuje se kroz cijelu riječ i ne pomiče se na sredinu visine ako se znak skalira.
+            Crvena linija počinje lijevo od L i staje u A. Ne produžuje se kroz cijelu riječ.
           </Rule>
           <Rule title="Prazan prostor">
-            Oko znaka ostaje najmanje visina zrake sa svake strane. U zaglavlju je znak visok 32–36 px.
+            Oko znaka ostaje najmanje visina zrake sa svake strane. U zaglavlju je znak visok 32–36 px i stoji na sredini.
           </Rule>
           <Rule title="Što se ne radi">
-            Bez sjene, obruba, nagiba i druge boje slova. Crni znak ne ide na crnu. Zraka se ne mijenja u narančastu.
+            Bez sjene, obruba i nagiba. Zraka ostaje #E2231A. Ne prelazi na gumbe ni na naslove.
           </Rule>
         </div>
       </section>
 
-      <section className="border-y border-border bg-card">
-        <div className="mx-auto max-w-[1180px] px-4 py-12 sm:px-6">
-          <h2 className="font-heading text-2xl font-medium">Boje</h2>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Papir je topliji od čiste bijele da fotografije proizvoda, koje su na bijeloj, sjednu u stranicu. Laser crvena je očišćena iz JPEG-a znaka, #E2231A.
+      <section className="border-y border-steel bg-mist">
+        <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 lg:py-[120px]">
+          <h2 className="font-heading text-[clamp(2rem,4vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">Boje</h2>
+          <p className="mt-4 max-w-2xl text-[16px] leading-[1.5] text-charcoal">
+            Shop je bijel. Dubinu nose fotografija i teški naslov, ne sjena. Chord plava je samo za tekstualni link.
           </p>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-10 grid gap-px bg-white sm:grid-cols-2 lg:grid-cols-3">
             {colors.map((color) => (
-              <li key={color.hex} className="overflow-hidden rounded-xl border border-border">
-                <div className="h-16" style={{ background: color.hex }} />
-                <div className="bg-card px-4 py-3 text-sm">
+              <li key={color.hex} className="bg-white">
+                <div className="h-20 border border-steel" style={{ background: color.hex }} />
+                <div className="px-4 py-4 text-[14px]">
                   <p className="font-medium">{color.name}</p>
-                  <p className="font-mono text-xs text-muted-foreground">{color.hex}</p>
-                  <p className="mt-1 text-muted-foreground">{color.role}</p>
+                  <p className="font-mono text-[12px] text-charcoal">{color.hex}</p>
+                  <p className="mt-1 text-charcoal">{color.role}</p>
                 </div>
               </li>
             ))}
@@ -74,45 +79,44 @@ export default function BrandPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1180px] px-4 py-12 sm:px-6">
-        <h2 className="font-heading text-2xl font-medium">Slova</h2>
-        <div className="mt-6 grid gap-6 md:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-card p-6">
-            <p className="text-4xl font-extrabold tracking-tight">Montserrat</p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Isti rez kao na IGO katalogu. Naslovi su ekstra podebljani, tekst i cijene redovni. Ima č, ć, đ, š, ž.
+      <section className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 lg:py-[120px]">
+        <h2 className="font-heading text-[clamp(2rem,4vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">Slova</h2>
+        <div className="mt-10 grid gap-px md:grid-cols-2">
+          <div className="bg-mist p-8 sm:p-10">
+            <p className="font-heading text-[60px] leading-[0.88] font-extrabold tracking-[0.02em]">Dosis</p>
+            <p className="mt-4 text-[16px] leading-[1.5] text-charcoal">
+              Naslovi. Težina 800, visina reda 0.88. Ne ide ispod 32 px.
             </p>
           </div>
-        </div>
-        <div className="mt-6 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          <p className="font-medium text-foreground">Glas</p>
-          <p className="mt-2">
-            Kratko i konkretno: šifra, količina, tehnika, rok, Ljubuški. Bez „revolucije brenda” i bez brojeva koji nisu na sadašnjem webu. Cijena „od” uvijek stoji uz količinu na kojoj vrijedi.
-          </p>
+          <div className="bg-porcelain p-8 sm:p-10">
+            <p className="text-[24px] leading-[1.5] font-medium">Arial</p>
+            <p className="mt-4 text-[16px] leading-[1.5] text-charcoal">
+              Sučelje, navigacija, cijene i gumbi. Navigacija je velika slova, 15 px. Gumb je 16 px, težina 500.
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="border-t border-border bg-card">
-        <div className="mx-auto grid max-w-[1180px] gap-6 px-4 py-12 sm:px-6 md:grid-cols-2">
+      <section className="border-t border-steel">
+        <div className="mx-auto grid max-w-[1440px] gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 lg:py-[120px]">
           <div>
-            <h2 className="font-heading text-2xl font-medium">Gumbi</h2>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <span className="inline-flex h-11 items-center rounded-full bg-navy px-5 text-sm text-white">Sve kategorije</span>
-              <span className="inline-flex h-11 items-center rounded-full bg-orange px-5 text-sm font-bold text-white">Traži</span>
-              <span className="inline-flex h-11 items-center rounded-full bg-stock px-5 text-sm font-bold text-white">Zatraži ponudu</span>
+            <h2 className="font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em]">Gumbi</h2>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <span className={btnOutline}>Odaberi</span>
+              <span className={btnFill}>Kupi</span>
+              <span className="bg-bass p-4">
+                <span className={btnOnDark}>Otvori</span>
+              </span>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Shop koristi mornarsku, narančastu i zelenu kao IGO katalog. Znak LASER i dalje ima svoju crvenu zraku, #E2231A.
+            <p className="mt-6 max-w-md text-[16px] leading-[1.5] text-charcoal">
+              Pravougaoni gumbi imaju radijus 2 px. Kartice su ravne. Pretraga i statusna oznaka su pilule. Bez sjene.
             </p>
           </div>
           <div>
-            <h2 className="font-heading text-2xl font-medium">Što je u ovom pregledu promijenjeno</h2>
-            <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-              <li>Izrez znaka i prozirna pozadina, slova netaknuta.</li>
-              <li>Bijela inačica za podnožje.</li>
-              <li>Crvena iz JPEG šuma svedena na jednu vrijednost, #E2231A.</li>
-              <li>Toplija podloga stranice da bijele fotografije proizvoda ne vise u praznini.</li>
-            </ul>
+            <h2 className="font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em]">Katalog</h2>
+            <p className="mt-6 text-[16px] leading-[1.5] text-charcoal">
+              Stablo kategorija ostaje kao na IGO Promu. Artikli su Laserovi. Ovaj vodič mijenja samo površinu: bijelo platno, crni tekst, uski naslov i fotografija artikla na Studio Mist podlozi.
+            </p>
           </div>
         </div>
       </section>
@@ -122,9 +126,9 @@ export default function BrandPage() {
 
 function Rule({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <article className="rounded-2xl border border-border bg-card p-5">
-      <h3 className="font-medium">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{children}</p>
+    <article className="bg-mist p-8 sm:p-10">
+      <h3 className="font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em]">{title}</h3>
+      <p className="mt-3 text-[16px] leading-[1.5] text-charcoal">{children}</p>
     </article>
   );
 }

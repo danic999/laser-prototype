@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { btnFill } from "@/lib/ui";
 
 export function QuoteForm() {
   const params = useSearchParams();
@@ -12,9 +12,9 @@ export function QuoteForm() {
 
   if (sent) {
     return (
-      <div className="rounded-2xl border border-border bg-card p-8">
-        <p className="text-xs tracking-[0.16em] text-laser uppercase">Upit je zabilježen lokalno</p>
-        <h2 className="mt-2 font-heading text-3xl font-medium">Hvala. Ovo je kraj prototipa.</h2>
+      <div className="bg-mist p-8 sm:p-10">
+        <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">Upit je zabilježen lokalno</p>
+        <h2 className="mt-3 font-heading text-[clamp(2rem,4vw,3rem)] leading-[0.88] font-extrabold tracking-[0.02em]">Hvala. Ovo je kraj prototipa.</h2>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
           Poruka nije poslana na veleprodaja@laser-bih.com. U pravom shopu ovdje nastaje ponuda:
           šifra, količina, tisak i kontakt firme odlaze prodaji, a kupac dobiva potvrdu.
@@ -31,7 +31,7 @@ export function QuoteForm() {
         setSent(true);
       }}
     >
-      <div className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6">
+      <div className="space-y-4 bg-mist p-6 sm:p-10">
         <Field label="Firma" name="firma" required />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Ime i prezime" name="ime" required />
@@ -53,22 +53,22 @@ export function QuoteForm() {
             name="napomena"
             rows={4}
             defaultValue={sample ? "Molim uzorak prije serije." : ""}
-            className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
+            className="w-full rounded-[2px] border border-steel bg-white px-4 py-3 text-[16px] outline-none focus-visible:border-bass"
           />
         </label>
-        <Button type="submit" className="h-11 bg-laser px-5 text-white hover:bg-laser/90">
+        <button type="submit" className={btnFill}>
           Pošalji upit
-        </Button>
+        </button>
       </div>
-      <aside className="h-fit rounded-2xl bg-ink p-5 text-sm text-paper/80">
-        <p className="font-heading text-lg text-paper">Što prodaja dobije</p>
+      <aside className="h-fit bg-bass p-6 text-[16px] leading-[1.5] text-white/80 sm:p-8">
+        <p className="font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em] text-white">Što prodaja dobije</p>
         <ul className="mt-3 space-y-2">
           <li>Firmu i kontakt</li>
           <li>Šifru, boju i količinu</li>
           <li>Tehniku i poziciju tiska</li>
           <li>Oznaku ako treba uzorak</li>
         </ul>
-        <p className="mt-4 text-xs text-paper/55">
+        <p className="mt-6 text-[14px] text-white/70">
           +387 39 830 773
           <br />
           veleprodaja@laser-bih.com
@@ -94,7 +94,7 @@ function Field({
   return (
     <label className="block text-sm">
       <span className="mb-1.5 block font-medium">{label}</span>
-      <Input name={name} type={type} required={required} defaultValue={defaultValue} className="h-10 bg-background" />
+      <Input name={name} type={type} required={required} defaultValue={defaultValue} className="bg-white" />
     </label>
   );
 }

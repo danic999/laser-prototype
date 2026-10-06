@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { services } from "@/lib/catalog";
-import { Button } from "@/components/ui/button";
+import { btnFill } from "@/lib/ui";
 
 export const metadata: Metadata = { title: "Usluge tiska" };
 
 export default function ServicesPage() {
   return (
-    <main className="mx-auto max-w-[1180px] px-4 py-10 sm:px-6">
-      <p className="text-xs tracking-[0.16em] text-muted-foreground uppercase">Proizvodnja</p>
-      <h1 className="mt-2 max-w-2xl font-heading text-4xl font-medium tracking-tight">
+    <main className="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 lg:py-16">
+      <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">Proizvodnja</p>
+      <h1 className="mt-3 max-w-3xl font-heading text-[clamp(2.5rem,5vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">
         Tisak, gravura i oprema za radionice
       </h1>
       <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
@@ -18,16 +18,16 @@ export default function ServicesPage() {
       </p>
       <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
-          <li key={service.slug} className="rounded-2xl border border-border bg-card p-5">
-            <span className="block h-0.5 w-8 bg-laser" />
-            <h2 className="mt-4 font-heading text-xl font-medium">{service.name}</h2>
+          <li key={service.slug} className="bg-mist p-8 sm:p-10">
+            <span className="block h-px w-10 bg-bass" />
+            <h2 className="mt-6 font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em]">{service.name}</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{service.text}</p>
           </li>
         ))}
       </ul>
-      <Button render={<Link href="/ponuda" />} className="mt-8 h-11 bg-laser px-5 text-white hover:bg-laser/90">
+      <Link href="/ponuda" className={`${btnFill} mt-10`}>
         Pitaj za doradu
-      </Button>
+      </Link>
     </main>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, ChevronDown, Menu, Phone, Search, ShoppingBag } from "lucide-react";
+import { ChevronDown, Menu, Phone, Search, ShoppingBag, X } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,18 +15,10 @@ import {
 import { categories } from "@/lib/catalog";
 
 const links = [
-  { href: "/#paketi", label: "Akcije" },
-  { href: "/kategorija/torbe-i-putovanja/pamucne-torbe", label: "Održivo" },
-  { href: "/pretraga", label: "Brza isporuka" },
-  { href: "/#najprodavanije", label: "Najprodavanije" },
+  { href: "/#paketi", label: "Paketi" },
+  { href: "/#najprodavanije", label: "Najprodavanije", wide: true },
   { href: "/usluge", label: "Usluge" },
-  { href: "/o-nama", label: "O nama" },
-];
-
-const usps = [
-  ["Direktan uvoz", "Stalna zaliha"],
-  ["Dokaz prije tiska", "Znate što dobivate"],
-  ["Tisak u kući", "Gravura, UV, DTF"],
+  { href: "/o-nama", label: "O nama", wide: true },
 ];
 
 function CategoryMenu() {
@@ -34,38 +26,38 @@ function CategoryMenu() {
   const current = categories.find((category) => category.slug === active) ?? categories[0];
 
   return (
-    <div className="group relative py-2">
+    <div className="group relative">
       <button
         type="button"
-        className="inline-flex h-9 items-center gap-2 rounded-full bg-white px-4 text-sm font-bold text-navy"
+        className="inline-flex items-center gap-1 text-[15px] leading-[1.2] tracking-normal uppercase"
       >
-        Sve kategorije
-        <ChevronDown className="size-4" />
+        Kategorije
+        <ChevronDown className="size-3.5" strokeWidth={1.25} />
       </button>
-      <div className="invisible absolute top-full left-0 z-30 pt-1 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-        <div className="grid w-[680px] grid-cols-[240px_1fr] overflow-hidden rounded-lg border border-[#e3e5eb] bg-white text-navy shadow-lg">
-          <ul className="max-h-[70vh] overflow-auto border-r border-[#e3e5eb] py-2">
+      <div className="invisible absolute top-full left-0 z-30 pt-4 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+        <div className="grid w-[720px] grid-cols-[240px_1fr] border border-bass bg-white text-bass">
+          <ul className="max-h-[70vh] overflow-auto border-r border-steel">
             {categories.map((category) => (
               <li key={category.slug} onMouseEnter={() => setActive(category.slug)}>
                 <Link
                   href={`/kategorija/${category.slug}`}
-                  className={`block px-4 py-2 text-sm font-semibold ${category.slug === current.slug ? "bg-[#f5f8fa]" : "hover:bg-[#f5f8fa]"}`}
+                  className={`block px-4 py-2.5 text-[14px] ${category.slug === current.slug ? "bg-mist" : "hover:bg-mist"}`}
                 >
                   {category.name}
                 </Link>
               </li>
             ))}
           </ul>
-          <div className="max-h-[70vh] overflow-auto p-4">
-            <Link href={`/kategorija/${current.slug}`} className="text-sm font-extrabold">
+          <div className="max-h-[70vh] overflow-auto p-6">
+            <Link href={`/kategorija/${current.slug}`} className="text-[16px] font-medium">
               Sve · {current.name}
             </Link>
-            <ul className="mt-3 columns-2 gap-x-6">
+            <ul className="mt-4 columns-2 gap-x-8">
               {current.subs.map((sub) => (
                 <li key={sub.slug} className="mb-1 break-inside-avoid">
                   <Link
                     href={`/kategorija/${current.slug}/${sub.slug}`}
-                    className="block py-1 text-sm text-[#3c4468] hover:text-orange"
+                    className="block py-1 text-[14px] text-charcoal hover:text-bass"
                   >
                     {sub.name}
                   </Link>
@@ -86,95 +78,145 @@ function SearchForm({ className }: { className?: string }) {
         <span className="sr-only">Pretraga asortimana</span>
         <Input
           name="q"
-          placeholder="Koji proizvod tražite?"
-          className="h-10 rounded-full border-[#e3e5eb] bg-white pr-10 pl-4"
+          placeholder="Pretraga"
+          className="h-11 border-transparent bg-mist pr-11 pl-6 text-[15px]"
         />
-        <Search className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-navy" />
+        <Search className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-black" strokeWidth={1.5} />
       </label>
     </form>
   );
 }
 
-export function SiteHeader() {
+function IconLink({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  const className =
+    "inline-flex size-10 items-center justify-center rounded-full border border-bass text-bass";
+  if (href.startsWith("tel:")) {
+    return (
+      <a href={href} aria-label={label} className={className}>
+        {children}
+      </a>
+    );
+  }
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-[0_1px_0_#e3e5eb]">
-      <div className="mx-auto flex max-w-[1180px] items-center gap-4 px-4 py-3 sm:px-6">
-        <Logo />
-        <div className="hidden min-w-0 flex-1 flex-col gap-2 lg:flex">
-          <ul className="grid grid-cols-3 gap-2 text-[13px] leading-tight">
-            {usps.map(([title, line]) => (
-              <li key={title} className="flex items-start gap-2">
-                <Check className="mt-0.5 size-4 shrink-0 text-stock" strokeWidth={3} />
-                <span>
-                  <span className="block font-bold text-navy">{title}</span>
-                  <span className="text-muted-foreground">{line}</span>
-                </span>
+    <Link href={href} aria-label={label} className={className}>
+      {children}
+    </Link>
+  );
+}
+
+export function SiteHeader() {
+  const [announce, setAnnounce] = useState(true);
+
+  return (
+    <header className="sticky top-0 z-40 bg-white">
+      {announce ? (
+        <div className="relative bg-countertenor px-10 py-2 text-center text-[12px] leading-[1.33] text-bass">
+          Božićni promo paketi su u sezoni. Besplatna dostava iznad 410 KM, do 30 kg.
+          <button
+            type="button"
+            aria-label="Zatvori obavijest"
+            onClick={() => setAnnounce(false)}
+            className="absolute top-1/2 right-3 -translate-y-1/2"
+          >
+            <X className="size-3.5" strokeWidth={1.5} />
+          </button>
+        </div>
+      ) : null}
+      <div className="border-b border-steel">
+        <div className="relative mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-4 sm:px-6">
+          <Logo className="absolute left-1/2 -translate-x-1/2" />
+          <div className="flex items-center gap-6">
+            <Sheet>
+              <SheetTrigger
+                className="inline-flex size-10 items-center justify-center rounded-full border border-bass lg:hidden"
+                aria-label="Izbornik"
+              >
+                <Menu className="size-4" strokeWidth={1.5} />
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[min(100%,22rem)] overflow-y-auto bg-white">
+                <SheetHeader>
+                  <SheetTitle className="font-heading text-[24px] font-extrabold tracking-[0.02em]">LASER</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-6 px-4 pb-10">
+                  <SearchForm />
+                  <nav className="flex flex-col gap-3 text-[15px] uppercase">
+                    {links.map((link) => (
+                      <Link key={link.href} href={link.href}>
+                        {link.label}
+                      </Link>
+                    ))}
+                    <a href="tel:+38739830773">+387 39 830 773</a>
+                  </nav>
+                  {categories.map((category) => (
+                    <div key={category.slug}>
+                      <Link href={`/kategorija/${category.slug}`} className="text-[15px] font-medium">
+                        {category.name}
+                      </Link>
+                      <div className="mt-1 flex flex-col">
+                        {category.subs.map((sub) => (
+                          <Link
+                            key={sub.slug}
+                            href={`/kategorija/${category.slug}/${sub.slug}`}
+                            className="py-1 text-[14px] text-charcoal"
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+            <nav className="hidden items-center gap-6 lg:flex">
+              <CategoryMenu />
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`text-[15px] leading-[1.2] uppercase ${"wide" in link && link.wide ? "hidden xl:inline" : ""}`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+          <div className="relative z-10 flex items-center justify-end gap-2 sm:gap-3">
+            <SearchForm className="hidden w-[220px] xl:block" />
+            <IconLink href="tel:+38739830773" label="Nazovi +387 39 830 773">
+              <Phone className="size-4" strokeWidth={1.5} />
+            </IconLink>
+            <IconLink href="/ponuda" label="Upit za ponudu">
+              <ShoppingBag className="size-4" strokeWidth={1.5} />
+            </IconLink>
+          </div>
+        </div>
+        <div className="border-t border-steel/50 bg-porcelain">
+          <ul className="mx-auto flex max-w-[1440px] gap-6 overflow-x-auto px-4 py-3 text-[12px] leading-[1.33] tracking-[0.06em] uppercase sm:px-6 [scrollbar-width:none]">
+            {categories.map((category) => (
+              <li key={category.slug} className="shrink-0">
+                <Link href={`/kategorija/${category.slug}`} className="text-bass hover:text-charcoal">
+                  {category.name}
+                </Link>
               </li>
             ))}
           </ul>
-          <SearchForm />
-        </div>
-        <a href="tel:+38739830773" className="ml-auto hidden items-center gap-2 text-sm lg:flex">
-          <Phone className="size-5 text-navy" />
-          <span>
-            <span className="block text-base leading-none font-extrabold">+387 39 830 773</span>
-            <span className="text-xs text-muted-foreground">08:00–16:00</span>
-          </span>
-        </a>
-        <Sheet>
-          <SheetTrigger
-            className="ml-auto inline-flex size-10 items-center justify-center rounded-full border border-[#e3e5eb] lg:hidden"
-            aria-label="Izbornik"
-          >
-            <Menu className="size-4" />
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[min(100%,22rem)] bg-white">
-            <SheetHeader>
-              <SheetTitle>LASER</SheetTitle>
-            </SheetHeader>
-            <div className="flex flex-col gap-4 px-4 pb-6">
-              <SearchForm />
-              <a href="tel:+38739830773" className="text-sm font-bold">
-                +387 39 830 773
-              </a>
-              {categories.map((category) => (
-                <div key={category.slug}>
-                  <Link href={`/kategorija/${category.slug}`} className="text-sm font-bold">
-                    {category.name}
-                  </Link>
-                  <div className="mt-1 mb-3 flex flex-col">
-                    {category.subs.map((sub) => (
-                      <Link
-                        key={sub.slug}
-                        href={`/kategorija/${category.slug}/${sub.slug}`}
-                        className="py-1 text-sm text-muted-foreground"
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </SheetContent>
-        </Sheet>
-      </div>
-      <div className="bg-navy text-white">
-        <div className="mx-auto flex max-w-[1180px] items-center gap-1 px-4 sm:px-6">
-          <CategoryMenu />
-          <nav className="hidden items-center md:flex">
-            {links.map((link) => (
-              <Link key={link.href} href={link.href} className="px-3 py-3 text-sm font-semibold text-white/95 hover:text-orange">
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-          <Link href="/ponuda" className="ml-auto inline-flex items-center gap-2 py-3 text-sm font-semibold">
-            <ShoppingBag className="size-5" />
-            <span className="hidden sm:inline">Ponuda</span>
-          </Link>
         </div>
       </div>
+      <Link
+        href="/ponuda"
+        className="fixed top-1/2 right-0 z-30 hidden -translate-y-1/2 bg-bass px-2 py-5 text-[12px] tracking-[0.12em] text-white uppercase [writing-mode:vertical-rl] lg:inline"
+      >
+        Ponuda
+      </Link>
     </header>
   );
 }

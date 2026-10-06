@@ -2,17 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Backpack,
+  CupSoda,
   Flame,
+  Flag,
   PenLine,
   Shirt,
   ShoppingBag,
   Umbrella,
-  CupSoda,
-  Flag,
 } from "lucide-react";
-import { ProductCard } from "@/components/product-card";
-import { categories, products } from "@/lib/catalog";
+import { ProductRail } from "@/components/product-rail";
+import { products } from "@/lib/catalog";
 import { packageProducts, packages, packageTotalLabel } from "@/lib/packages";
+import { btnOnDark, btnOutline, displayTitle, heroTitle, linkOnDark } from "@/lib/ui";
 
 const icons = [
   { href: "/kategorija/pisaci-pribor/kemijske-olovke", label: "Olovke", icon: PenLine },
@@ -34,93 +35,54 @@ const icons = [
 ];
 
 export default function HomePage() {
-  const featured = products.filter((product) => product.featured).slice(0, 4);
+  const featured = products.filter((product) => product.featured);
 
   return (
     <main className="bg-white">
-      <section className="mx-auto grid max-w-[1180px] gap-4 px-4 py-4 sm:px-6 lg:grid-cols-[270px_1fr]">
-        <form action="/pretraga" className="h-fit rounded-lg border border-[#e3e5eb] p-4">
-          <h2 className="text-lg font-extrabold">Napredna pretraga</h2>
-          <p className="mt-1 text-xs text-muted-foreground">Pretraži cijeli asortiman</p>
-          <label className="mt-4 block text-sm">
-            <span className="sr-only">Naziv ili šifra</span>
-            <input
-              name="q"
-              placeholder="Kategorija ili šifra"
-              className="h-10 w-full rounded-md border border-[#e3e5eb] px-3 text-sm"
-            />
-          </label>
-          <label className="mt-3 block text-sm font-semibold">
-            Količina
-            <select name="kolicina" className="mt-1 h-10 w-full rounded-md border border-[#e3e5eb] px-3 font-medium">
-              <option value="">Sve</option>
-              <option value="25">od 25</option>
-              <option value="50">od 50</option>
-              <option value="100">od 100</option>
-              <option value="250">od 250</option>
-            </select>
-          </label>
-          <label className="mt-3 block text-sm font-semibold">
-            Kategorija
-            <select name="kategorija" className="mt-1 h-10 w-full rounded-md border border-[#e3e5eb] px-3 font-medium">
-              <option value="">Sve</option>
-              {categories.map((category) => (
-                <option key={category.slug} value={category.slug}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button type="submit" className="mt-4 h-10 w-full rounded-full bg-orange text-sm font-extrabold text-white hover:bg-[#e09300]">
-            Traži
-          </button>
-        </form>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <Link
-            href="/#paketi"
-            className="flex min-h-[280px] flex-col justify-between gap-4 overflow-hidden rounded-lg bg-[#14203f] p-6 text-white sm:flex-row sm:items-center"
-          >
-            <div className="max-w-[16rem]">
-              <p className="text-xs font-bold tracking-wide text-orange uppercase">Sezona poklona</p>
-              <h1 className="mt-1 text-3xl leading-tight font-extrabold">Božićni promo paketi</h1>
-              <p className="mt-2 text-sm text-white/80">Setovi za klijente, tim i partnere. Tisak ide u istoj narudžbi.</p>
-              <span className="mt-4 inline-flex h-10 items-center rounded-full bg-orange px-5 text-sm font-extrabold text-white">
+      <section className="relative bg-mist">
+        <div className="relative h-[48vh] min-h-[300px] lg:absolute lg:inset-0 lg:h-auto">
+          <Image
+            src="/products/kisobran.jpg"
+            alt="Golf kišobran za zimski asortiman"
+            fill
+            priority
+            sizes="100vw"
+            className="origin-center scale-[1.35] object-cover object-[center_62%] mix-blend-multiply lg:scale-100 lg:object-[62%_center]"
+          />
+        </div>
+        <div className="relative z-10 flex lg:min-h-[88vh] lg:items-end">
+          <div className="w-full bg-bass px-6 py-10 text-white sm:px-10 sm:py-14 lg:w-[46%] lg:px-16 lg:py-16">
+            <p className="text-[24px] leading-[1.5] font-medium">Sezona poklona</p>
+            <h1 className={`${heroTitle} mt-3`}>
+              Božićni
+              <br />
+              promo
+            </h1>
+            <p className="mt-6 max-w-md text-[16px] leading-[1.5] text-white/80">
+              Setovi za klijente, tim i partnere. Olovka, šalica, boca i tisak idu u istoj narudžbi.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-6">
+              <Link href="/#paketi" className={btnOnDark}>
                 Otvori pakete
-              </span>
+              </Link>
+              <Link href="/kategorija/slobodno-vrijeme/kisobrani" className={linkOnDark}>
+                Zimski asortiman
+                <span aria-hidden>→</span>
+              </Link>
             </div>
-            <div className="flex gap-2">
-              {["/products/kutija.jpg", "/products/salica.jpg", "/products/olovka-silver.jpg"].map((src) => (
-                <span key={src} className="relative size-20 overflow-hidden rounded-md bg-white sm:size-24">
-                  <Image src={src} alt="" fill className="object-contain p-1" />
-                </span>
-              ))}
-            </div>
-          </Link>
-          <Link
-            href="/kategorija/slobodno-vrijeme/kisobrani"
-            className="relative flex min-h-[280px] flex-col justify-end overflow-hidden rounded-lg bg-[#1f264c] p-6 text-white"
-          >
-            <Image src="/products/kisobran.jpg" alt="Zimski kišobrani" fill className="object-cover opacity-80" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1f264c] via-[#1f264c]/55 to-transparent" />
-            <div className="relative">
-              <p className="text-xs font-bold tracking-wide text-orange uppercase">Zima</p>
-              <h2 className="mt-1 text-3xl leading-tight font-extrabold">Zimski asortiman</h2>
-              <p className="mt-2 text-sm text-white/80">Kišobrani, boce, ruksaci i tekstil za kraj godine.</p>
-              <span className="mt-4 inline-flex h-10 items-center rounded-full bg-orange px-5 text-sm font-extrabold text-white">
-                Pogledaj
-              </span>
-            </div>
-          </Link>
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1180px] px-4 py-6 sm:px-6">
-        <ul className="grid grid-cols-4 gap-y-6 sm:grid-cols-8">
+      <section className="bg-porcelain">
+        <ul className="mx-auto grid max-w-[1440px] grid-cols-4 gap-y-8 px-4 py-10 sm:px-6 sm:grid-cols-8">
           {icons.map((item) => (
             <li key={item.label}>
-              <Link href={item.href} className="flex flex-col items-center gap-2 text-center text-xs font-semibold text-navy hover:text-orange">
-                <item.icon className="size-9" strokeWidth={1.25} />
+              <Link
+                href={item.href}
+                className="flex flex-col items-center gap-3 text-center text-[12px] leading-[1.33] tracking-[0.04em] text-bass uppercase"
+              >
+                <item.icon className="size-6" strokeWidth={1} />
                 {item.label}
               </Link>
             </li>
@@ -128,76 +90,86 @@ export default function HomePage() {
         </ul>
       </section>
 
-      <section id="paketi" className="border-t border-[#e3e5eb] bg-[#f7f8fb]">
-        <div className="mx-auto max-w-[1180px] px-4 py-10 sm:px-6">
-          <h2 className="text-center text-2xl font-extrabold">Božićni promo paketi</h2>
-          <p className="mx-auto mt-2 max-w-xl text-center text-sm text-muted-foreground">
-            Sezona je krenula. Ovo su složeni setovi od artikala koji su već u ponudi. Cijena je primjer po setu, bez PDV-a.
-          </p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {packages.map((item) => {
-              const included = packageProducts(item);
-              return (
-                <article key={item.slug} className="flex flex-col rounded-lg border border-[#e3e5eb] bg-white p-4">
-                  <p className="text-xs font-bold tracking-wide text-orange uppercase">{item.season}</p>
-                  <div className="mt-3 flex h-28 items-center justify-center gap-2">
-                    {included.slice(0, 3).map((product) => (
-                      <Image
-                        key={product.slug}
-                        src={product.colors[0].image}
-                        alt=""
-                        width={96}
-                        height={96}
-                        className="size-24 object-contain"
-                      />
-                    ))}
-                  </div>
-                  <h3 className="mt-2 text-lg font-extrabold">{item.name}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.blurb}</p>
-                  <p className="mt-3 text-sm">
-                    <span className="text-lg font-extrabold">{packageTotalLabel(item)}</span>
-                    <span className="text-muted-foreground"> / set · {item.qty} setova</span>
-                  </p>
-                  <Link
-                    href={`/paket/${item.slug}`}
-                    className="mt-4 inline-flex h-10 items-center justify-center rounded-full border-2 border-orange text-sm font-extrabold text-navy hover:bg-orange hover:text-white"
-                  >
-                    Složi paket
-                  </Link>
-                </article>
-              );
-            })}
+      <section className="grid md:grid-cols-2">
+        <Link href="/kategorija/posude-za-pice/salice" className="group relative min-h-[520px] bg-mist">
+          <Image src="/products/salica.jpg" alt="" fill sizes="50vw" className="object-contain p-16 mix-blend-multiply" />
+          <div className="absolute bottom-8 left-6 max-w-md text-white sm:left-10">
+            <div className="bg-bass px-6 py-8 sm:px-8">
+              <h2 className="font-heading text-[clamp(2.5rem,4vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">
+                Šalice
+              </h2>
+              <p className="mt-3 text-[16px] leading-[1.5] text-white/80">Sublimacija za firmu, u boji.</p>
+              <span className={`${btnOnDark} mt-6`}>Otvori</span>
+            </div>
           </div>
+        </Link>
+        <Link href="/kategorija/torbe-i-putovanja/shopping-torbe" className="relative min-h-[520px] bg-porcelain">
+          <Image src="/products/torba.jpg" alt="" fill sizes="50vw" className="object-contain p-16 mix-blend-multiply" />
+          <div className="absolute right-6 bottom-8 left-6 max-w-md sm:left-10">
+            <div className="bg-bass px-6 py-8 text-white sm:px-8">
+              <h2 className="font-heading text-[clamp(2.5rem,4vw,3.75rem)] leading-[0.88] font-extrabold tracking-[0.02em]">
+                Torbe
+              </h2>
+              <p className="mt-3 text-[16px] leading-[1.5] text-white/80">Shopping, laptop i rashladne.</p>
+              <span className={`${btnOnDark} mt-6`}>Otvori</span>
+            </div>
+          </div>
+        </Link>
+      </section>
+
+      <section id="paketi" className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 lg:py-[120px]">
+        <p className="text-[12px] tracking-[0.08em] text-charcoal uppercase">Božić 2026</p>
+        <h2 className={`${displayTitle} mt-3 max-w-3xl`}>Božićni promo paketi</h2>
+        <p className="mt-4 max-w-xl text-[16px] leading-[1.5] text-charcoal">
+          Složeni setovi od artikala koji su već u ponudi. Cijena je primjer po setu, bez PDV-a.
+        </p>
+        <div className="mt-12 grid gap-px bg-white sm:grid-cols-2 lg:grid-cols-3">
+          {packages.map((item) => {
+            const included = packageProducts(item);
+            return (
+              <article key={item.slug} className="flex flex-col bg-mist p-8 sm:p-10">
+                <p className="text-[12px] tracking-[0.08em] uppercase">{item.season}</p>
+                <div className="mt-6 flex h-28 items-center gap-2">
+                  {included.slice(0, 3).map((product) => (
+                    <Image
+                      key={product.slug}
+                      src={product.colors[0].image}
+                      alt=""
+                      width={96}
+                      height={96}
+                      className="size-24 object-contain"
+                    />
+                  ))}
+                </div>
+                <h3 className="mt-6 font-heading text-[32px] leading-[1.2] font-normal tracking-[0.03em]">{item.name}</h3>
+                <p className="mt-3 text-[16px] leading-[1.5] text-charcoal">{item.blurb}</p>
+                <p className="mt-6 text-[16px]">
+                  <span className="font-medium">{packageTotalLabel(item)}</span>
+                  <span className="text-charcoal"> / set · {item.qty} setova</span>
+                </p>
+                <Link href={`/paket/${item.slug}`} className={`${btnOutline} mt-8 w-fit`}>
+                  Složi paket
+                </Link>
+              </article>
+            );
+          })}
         </div>
-      </section>
-
-      <section className="mx-auto grid max-w-[1180px] gap-4 px-4 py-8 sm:px-6 md:grid-cols-3">
-        {[
-          { href: "/kategorija/posude-za-pice/salice", title: "Šalice", text: "Sublimacijske šalice iz posuđa za piće.", image: "/products/salica.jpg", cta: "Otvori" },
-          { href: "/#paketi", title: "Sezonske ponude", text: "Božićni setovi spremni za tisak logotipa.", image: "/products/olovka-crna.jpg", cta: "Vidi pakete" },
-          { href: "/usluge", title: "Usluge tiska", text: "Gravura, UV, DTF i digitalni tisak u Ljubuškom.", image: "/products/upaljac.jpg", cta: "Sve usluge" },
-        ].map((tile) => (
-          <Link key={tile.title} href={tile.href} className="overflow-hidden rounded-lg bg-[#1f264c] text-white">
-            <div className="relative h-36 bg-white">
-              <Image src={tile.image} alt="" fill className="object-contain p-4" />
-            </div>
-            <div className="p-4">
-              <h3 className="text-lg font-extrabold">{tile.title}</h3>
-              <p className="mt-1 text-sm text-white/75">{tile.text}</p>
-              <span className="mt-3 inline-flex h-9 items-center rounded-full bg-orange px-4 text-sm font-extrabold">
-                {tile.cta}
-              </span>
-            </div>
+        <p className="mt-8 text-[16px]">
+          <Link href="/o-nama" className="text-chord">
+            Kako firma naručuje
           </Link>
-        ))}
+        </p>
       </section>
 
-      <section id="najprodavanije" className="mx-auto max-w-[1180px] px-4 pb-12 sm:px-6">
-        <h2 className="text-center text-2xl font-extrabold">Najprodavanije</h2>
-        <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {featured.map((product) => (
-            <ProductCard key={product.slug} product={product} />
-          ))}
+      <section id="najprodavanije" className="border-t border-steel">
+        <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 lg:py-[120px]">
+          <h2 className={displayTitle}>Najprodavanije</h2>
+          <p className="mt-4 max-w-xl text-[16px] leading-[1.5] text-charcoal">
+            Šifre iz stalnog asortimana. Cijena „od“ vrijedi na najnižem pragu količine.
+          </p>
+          <div className="mt-12">
+            <ProductRail products={featured} />
+          </div>
         </div>
       </section>
     </main>
