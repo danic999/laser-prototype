@@ -36,13 +36,15 @@ const banners = [
     image: "/products/kutija.jpg",
     alt: "Božićni poklon set",
     title: "Božićni promo",
-    className: "left-[8%] top-8 -rotate-6",
+    line: "Setovi za partnere",
+    className: "left-[6%] top-6 -rotate-6",
   },
   {
     href: "/kategorija/slobodno-vrijeme/kisobrani",
     image: "/products/kisobran.jpg",
     alt: "Zimski kišobrani",
     title: "Zimski asortiman",
+    line: "Kišobran i teren",
     className: "left-1/2 top-0 z-10 -translate-x-1/2",
   },
   {
@@ -50,9 +52,36 @@ const banners = [
     image: "/products/upaljac.jpg",
     alt: "Tisak na upaljaču",
     title: "Tisak u kući",
-    className: "top-10 right-[8%] rotate-6",
+    line: "Gravura, UV, DTF",
+    className: "top-8 right-[6%] rotate-6",
   },
 ];
+
+function PromoAd({
+  banner,
+  className,
+}: {
+  banner: (typeof banners)[number];
+  className?: string;
+}) {
+  return (
+    <Link
+      href={banner.href}
+      className={`block overflow-hidden rounded-[22px] bg-black text-white ${cardShadow} ${className ?? ""}`}
+    >
+      <span className="relative block h-[112px]">
+        <Image src={banner.image} alt={banner.alt} fill sizes="200px" className="scale-150 object-cover" />
+        <span className="absolute top-2 left-2 rounded-full bg-white px-2 py-0.5 text-[11px] leading-none font-medium tracking-[-0.02em] text-black">
+          Akcija
+        </span>
+      </span>
+      <span className="block px-3 py-2.5">
+        <span className="block text-[14px] leading-[1.2] font-medium tracking-[-0.02em]">{banner.title}</span>
+        <span className="mt-0.5 block text-[12px] leading-[1.3] text-white/70">{banner.line}</span>
+      </span>
+    </Link>
+  );
+}
 
 export default function HomePage() {
   const featured = products.filter((product) => product.featured).slice(0, 4);
@@ -60,28 +89,14 @@ export default function HomePage() {
   return (
     <main>
       <section className="mx-auto max-w-[1200px] px-4 pt-6 pb-16 sm:pt-10">
-        <div className="relative mx-auto mb-8 hidden h-[300px] max-w-[760px] sm:block">
+        <div className="relative mx-auto mb-8 hidden h-[250px] max-w-[760px] sm:block">
           {banners.map((banner) => (
-            <Link
-              key={banner.title}
-              href={banner.href}
-              className={`absolute w-[190px] rounded-[28px] bg-white p-2 ${cardShadow} ${banner.className}`}
-            >
-              <span className="relative block aspect-square overflow-hidden rounded-[20px] bg-canvas">
-                <Image src={banner.image} alt={banner.alt} fill sizes="190px" className="object-contain" />
-              </span>
-              <span className="block px-2 py-2 text-[14px] font-medium tracking-[-0.014em]">{banner.title}</span>
-            </Link>
+            <PromoAd key={banner.title} banner={banner} className={`absolute w-[200px] ${banner.className}`} />
           ))}
         </div>
-        <div className="mb-6 flex justify-center gap-3 sm:hidden">
+        <div className="mb-6 flex justify-center gap-2 sm:hidden">
           {banners.map((banner) => (
-            <Link key={banner.title} href={banner.href} className={`w-[104px] rounded-[20px] bg-white p-1.5 ${cardShadow}`}>
-              <span className="relative block aspect-square overflow-hidden rounded-[14px] bg-canvas">
-                <Image src={banner.image} alt={banner.alt} fill sizes="104px" className="object-contain" />
-              </span>
-              <span className="block px-1 py-1.5 text-[12px] leading-[1.2] font-medium tracking-[-0.014em]">{banner.title}</span>
-            </Link>
+            <PromoAd key={banner.title} banner={banner} className="w-[112px]" />
           ))}
         </div>
         <div className="hidden justify-center sm:flex">
