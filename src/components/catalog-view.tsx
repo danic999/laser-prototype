@@ -30,10 +30,11 @@ export function CatalogView({
   activeSub?: string;
 }) {
   const [sort, setSort] = useState("preporuceno");
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [stored, setStored] = useState<{
     key: string;
-    print: string | null;
-    range: { low: number; high: number } | null;
+    draft: FilterSelection;
+    applied: FilterSelection;
   } | null>(null);
 
   const priceBounds = useMemo(() => {
@@ -53,27 +54,21 @@ export function CatalogView({
   }, [products]);
 
   const filterKey = `${priceBounds?.min ?? "x"}|${priceBounds?.max ?? "x"}|${printChoices.join(",")}`;
-  const print = stored?.key === filterKey ? stored.print : null;
-  const range = stored?.key === filterKey ? stored.range : null;
+  const draft = stored?.key === filterKey ? stored.draft : emptyFilters;
+  const applied = stored?.key === filterKey ? stored.applied : emptyFilters;
+  const pending = !sameFilters(draft, applied);
 
-  function setPrint(next: string | null) {
-    setStored({ key: filterKey, print: next, range });
+  function updateDraft(next: FilterSelection) {
+    setStored({ key: filterKey, draft: normalizeFilters(next, priceBounds), applied });
   }
 
-  function setRange(next: { low: number; high: number } | null) {
-    setStored({ key: filterKey, print, range: next });
+  function applyFilters() {
+    setStored({ key: filterKey, draft, applied: draft });
+    setSheetOpen(false);
   }
-
-  const low = range?.low ?? priceBounds?.min ?? 0;
-  const high = range?.high ?? priceBounds?.max ?? 0;
 
   const visible = useMemo(() => {
-    let list = products.filter((product) => {
-      const unit = floorTier(product).unit;
-      const matchesPrint = !print || product.prints.includes(print);
-      const matchesPrice = unit >= low - 0.001 && unit <= high + 0.001;
-      return matchesPrint && matchesPrice;
-    });
+    let list = products.filter((product) => matchesFilters(product, applied, priceBounds));
     if (sort === "cijena") {
       list = [...list].sort((a, b) => floorTier(a).unit - floorTier(b).unit);
     }
@@ -81,21 +76,24 @@ export function CatalogView({
       list = [...list].sort((a, b) => a.name.localeCompare(b.name, "bs"));
     }
     return list;
-  }, [products, print, low, high, sort]);
+  }, [products, applied, priceBounds, sort]);
 
-  const priceMoved =
-    priceBounds != null && (low > priceBounds.min + 0.001 || high < priceBounds.max - 0.001);
-  const filtersActive = print != null || priceMoved;
+  const pendingCount = useMemo(
+    () => products.filter((product) => matchesFilters(product, draft, priceBounds)).length,
+    [products, draft, priceBounds],
+  );
+
+  const filtersActive = !sameFilters(applied, emptyFilters);
 
   function resetFilters() {
-    setStored({ key: filterKey, print: null, range: null });
+    setStored({ key: filterKey, draft: emptyFilters, applied: emptyFilters });
   }
 
   const filters = (
     <div className="space-y-8">
       <div>
         <p className="text-[12px] tracking-[-0.014em] text-[#787574]">Kategorije</p>
-        <ul className="mt-2">
+        <ul className="mt-2 max-h-[min(420px,46vh)] overflow-y-auto pr-1 [scrollbar-width:thin]">
           {categories.map((item) => {
             const open = category?.slug === item.slug;
             return (
@@ -135,35 +133,61 @@ export function CatalogView({
           })}
         </ul>
       </div>
-      {printChoices.length > 0 ? (
-        <div>
-          <label htmlFor="tisak" className="text-[12px] tracking-[-0.014em] text-[#787574]">
-            Tisak
-          </label>
-          <select
-            id="tisak"
-            value={print ?? ""}
-            onChange={(event) => setPrint(event.target.value || null)}
-            className="mt-2 h-9 w-full rounded-full border border-[#ebebeb] bg-white px-3 text-[14px] tracking-[-0.014em] shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
+      <div className="space-y-6 border-t border-[#ebebeb] pt-6">
+        {priceBounds && priceBounds.max > priceBounds.min ? (
+          <PriceSlider
+            min={priceBounds.min}
+            max={priceBounds.max}
+            low={draft.range?.low ?? priceBounds.min}
+            high={draft.range?.high ?? priceBounds.max}
+            onChange={(nextLow, nextHigh) => updateDraft({ ...draft, range: { low: nextLow, high: nextHigh } })}
+          />
+        ) : null}
+        {printChoices.length > 0 ? (
+          <fieldset>
+            <legend className="text-[12px] tracking-[-0.014em] text-[#787574]">Tisak</legend>
+            <div className="mt-2 space-y-1">
+              {printChoices.map((option) => {
+                const checked = draft.prints.includes(option);
+                return (
+                  <label key={option} className="flex items-center gap-2 py-0.5 text-[14px] tracking-[-0.014em]">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => {
+                        const prints = checked
+                          ? draft.prints.filter((item) => item !== option)
+                          : [...draft.prints, option];
+                        updateDraft({ ...draft, prints });
+                      }}
+                      className="size-4 accent-black"
+                    />
+                    {option}
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
+        ) : null}
+        <label className="flex items-center gap-2 text-[14px] tracking-[-0.014em]">
+          <input
+            type="checkbox"
+            checked={draft.inStock}
+            onChange={(event) => updateDraft({ ...draft, inStock: event.target.checked })}
+            className="size-4 accent-black"
+          />
+          Na zalihi
+        </label>
+        {pending ? (
+          <button
+            type="button"
+            onClick={applyFilters}
+            className="h-10 w-full rounded-full bg-black text-[14px] tracking-[-0.014em] text-white"
           >
-            <option value="">Sve tehnike</option>
-            {printChoices.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
-      ) : null}
-      {priceBounds && priceBounds.max > priceBounds.min ? (
-        <PriceSlider
-          min={priceBounds.min}
-          max={priceBounds.max}
-          low={low}
-          high={high}
-          onChange={(nextLow, nextHigh) => setRange({ low: nextLow, high: nextHigh })}
-        />
-      ) : null}
+            Filteri · {pendingCount}
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 
@@ -186,7 +210,7 @@ export function CatalogView({
             ) : null}
           </div>
           <div className="flex items-center gap-2">
-            <Sheet>
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
               <SheetTrigger className="inline-flex h-10 items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 text-[14px] shadow-[0_2px_8px_rgba(0,0,0,0.06)] lg:hidden">
                 <SlidersHorizontal className="size-4" />
                 Filteri
@@ -302,4 +326,46 @@ function stepFor(min: number, max: number) {
   if (span > 50) return 1;
   if (span > 10) return 0.1;
   return 0.01;
+}
+
+type FilterSelection = {
+  prints: string[];
+  inStock: boolean;
+  range: { low: number; high: number } | null;
+};
+
+const emptyFilters: FilterSelection = { prints: [], inStock: false, range: null };
+
+function normalizeFilters(
+  selection: FilterSelection,
+  bounds: { min: number; max: number } | null,
+): FilterSelection {
+  if (!bounds || !selection.range) return selection;
+  const full =
+    Math.abs(selection.range.low - bounds.min) < 0.001 && Math.abs(selection.range.high - bounds.max) < 0.001;
+  return full ? { ...selection, range: null } : selection;
+}
+
+function sameFilters(a: FilterSelection, b: FilterSelection) {
+  if (a.inStock !== b.inStock) return false;
+  if (a.prints.length !== b.prints.length) return false;
+  const left = [...a.prints].sort();
+  const right = [...b.prints].sort();
+  if (left.some((item, index) => item !== right[index])) return false;
+  if (!a.range && !b.range) return true;
+  if (!a.range || !b.range) return false;
+  return Math.abs(a.range.low - b.range.low) < 0.001 && Math.abs(a.range.high - b.range.high) < 0.001;
+}
+
+function matchesFilters(
+  product: Product,
+  selection: FilterSelection,
+  bounds: { min: number; max: number } | null,
+) {
+  const unit = floorTier(product).unit;
+  const low = selection.range?.low ?? bounds?.min ?? 0;
+  const high = selection.range?.high ?? bounds?.max ?? Number.POSITIVE_INFINITY;
+  const matchesPrint = selection.prints.length === 0 || selection.prints.some((name) => product.prints.includes(name));
+  const matchesStock = !selection.inStock || product.inStock;
+  return matchesPrint && matchesStock && unit >= low - 0.001 && unit <= high + 0.001;
 }
