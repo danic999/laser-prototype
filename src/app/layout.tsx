@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AccountProvider>
           <CartProvider>
             <SiteHeader />
-            <div className="flex min-h-full flex-col pb-20">
+            <div className="flex min-h-full flex-col pl-[88px]">
               {children}
               <SiteFooter />
             </div>

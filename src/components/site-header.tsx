@@ -8,13 +8,6 @@ import { useAccount } from "@/components/account-provider";
 import { useCart } from "@/components/cart-provider";
 import { Logo } from "@/components/logo";
 import { SearchBar } from "@/components/search-bar";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { categories } from "@/lib/catalog";
 
 function CategoryList({ onNavigate }: { onNavigate?: () => void }) {
@@ -92,50 +85,57 @@ export function SiteHeader() {
 
   return (
     <>
-      <div className={`bg-canvas ${home ? "lg:hidden" : ""}`}>
+      <div className={`bg-canvas pl-[88px] ${home ? "lg:hidden" : ""}`}>
         <div className="mx-auto flex max-w-[1200px] items-center gap-3 px-4 py-3">
           <Logo />
           {home ? null : (
             <SearchBar className="min-w-0 flex-1 [&_button]:size-9 [&_input]:h-11 [&_input]:pr-12 [&_input]:pl-4 [&_input]:text-[14px] sm:[&_button]:size-12 sm:[&_input]:h-14 sm:[&_input]:pr-16 sm:[&_input]:pl-5 sm:[&_input]:text-[16px]" />
           )}
-          <a
-            href="tel:+38739830773"
-            aria-label="Nazovi"
-            className="ml-auto hidden size-10 shrink-0 items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] sm:inline-flex"
-          >
-            <Phone className="size-4" strokeWidth={1.75} />
-          </a>
         </div>
       </div>
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[#ebebeb] bg-white pb-[max(0.35rem,env(safe-area-inset-bottom))]">
-        <div className="mx-auto grid max-w-[720px] grid-cols-6">
-          <TabLink href="/" label="Home" icon={House} active={tabs[0].active} />
-          <Sheet open={categoriesOpen} onOpenChange={setCategoriesOpen}>
-            <SheetTrigger
-              className={`flex flex-col items-center gap-1 px-0.5 py-2 text-[11px] leading-none tracking-[-0.02em] whitespace-nowrap ${path.startsWith("/kategorija") ? "font-medium text-black" : "text-[#787574]"}`}
-            >
-              <LayoutGrid className="size-5" strokeWidth={1.75} />
-              Kategorije
-            </SheetTrigger>
-            <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-[28px] bg-white">
-              <SheetHeader>
-                <SheetTitle className="tracking-[-0.03em]">Kategorije</SheetTitle>
-              </SheetHeader>
-              <div className="px-4 pb-8">
-                <CategoryList onNavigate={() => setCategoriesOpen(false)} />
-              </div>
-            </SheetContent>
-          </Sheet>
-          {tabs.slice(1).map((item) => (
-            <TabLink key={item.label} href={item.href} label={item.label} icon={item.icon} active={item.active} badge={item.href === "/kosarica" ? count : 0} />
-          ))}
-        </div>
+      <nav className="fixed inset-y-0 left-0 z-50 flex w-[88px] flex-col items-center border-r border-[#ebebeb] bg-white py-3">
+        <RailLink href="/" label="Home" icon={House} active={tabs[0].active} />
+        <button
+          type="button"
+          aria-expanded={categoriesOpen}
+          onClick={() => setCategoriesOpen((open) => !open)}
+          className={`flex w-full flex-col items-center gap-1 px-1 py-2.5 text-[11px] leading-none tracking-[-0.02em] ${path.startsWith("/kategorija") || categoriesOpen ? "font-medium text-black" : "text-[#787574]"}`}
+        >
+          <LayoutGrid className="size-5" strokeWidth={1.75} />
+          Kategorije
+        </button>
+        {tabs.slice(1).map((item) => (
+          <RailLink key={item.label} href={item.href} label={item.label} icon={item.icon} active={item.active} badge={item.href === "/kosarica" ? count : 0} />
+        ))}
+        <a
+          href="tel:+38739830773"
+          aria-label="Nazovi"
+          className="mt-auto mb-1 flex size-10 items-center justify-center rounded-full text-[#787574] hover:bg-canvas hover:text-black"
+        >
+          <Phone className="size-4" strokeWidth={1.75} />
+        </a>
       </nav>
+      {categoriesOpen ? (
+        <>
+          <button
+            type="button"
+            aria-label="Zatvori kategorije"
+            className="fixed inset-0 z-40 bg-black/20"
+            onClick={() => setCategoriesOpen(false)}
+          />
+          <div className="fixed inset-y-0 left-[88px] z-50 w-[min(640px,calc(100vw-88px))] overflow-y-auto bg-white shadow-[4px_0_24px_rgba(0,0,0,0.08)]">
+            <div className="px-5 py-5">
+              <p className="mb-4 text-[20px] font-medium tracking-[-0.05em]">Kategorije</p>
+              <CategoryList onNavigate={() => setCategoriesOpen(false)} />
+            </div>
+          </div>
+        </>
+      ) : null}
     </>
   );
 }
 
-function TabLink({
+function RailLink({
   href,
   label,
   icon: Icon,
@@ -151,7 +151,7 @@ function TabLink({
   return (
     <Link
       href={href}
-      className={`relative flex flex-col items-center gap-1 px-0.5 py-2 text-[11px] leading-none tracking-[-0.02em] whitespace-nowrap ${active ? "font-medium text-black" : "text-[#787574]"}`}
+      className={`flex w-full flex-col items-center gap-1 px-1 py-2.5 text-[11px] leading-none tracking-[-0.02em] ${active ? "font-medium text-black" : "text-[#787574] hover:text-black"}`}
     >
       <span className="relative">
         <Icon className="size-5" strokeWidth={1.75} />
