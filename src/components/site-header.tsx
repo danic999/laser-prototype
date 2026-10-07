@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Gift, House, Info, LayoutGrid, Menu, Phone, Printer, ShoppingBag, User } from "lucide-react";
+import { BadgePercent, House, Info, LayoutGrid, Phone, ShoppingBag, User } from "lucide-react";
 import { useAccount } from "@/components/account-provider";
 import { useCart } from "@/components/cart-provider";
 import { Logo } from "@/components/logo";
@@ -17,107 +17,46 @@ import {
 } from "@/components/ui/sheet";
 import { categories } from "@/lib/catalog";
 
-const rail = [
-  { href: "/", label: "Naslovnica", icon: House },
-  { href: "/#paketi", label: "Paketi", icon: Gift },
-  { href: "/usluge", label: "Usluge", icon: Printer },
-  { href: "/o-nama", label: "O nama", icon: Info },
-  { href: "/kosarica", label: "Košarica", icon: ShoppingBag },
-];
-
-function CategoryPanel() {
+function CategoryList({ onNavigate }: { onNavigate?: () => void }) {
   const [active, setActive] = useState(categories[0].slug);
   const current = categories.find((category) => category.slug === active) ?? categories[0];
 
   return (
-    <div className="group relative">
-      <button
-        type="button"
-        aria-label="Kategorije"
-        className="flex size-12 items-center justify-center rounded-[20px] text-black group-hover:bg-canvas"
-      >
-        <LayoutGrid className="size-5" strokeWidth={1.75} />
-      </button>
-      <div className="invisible absolute top-0 left-14 z-50 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-        <div className="grid w-[680px] grid-cols-[220px_1fr] rounded-[28px] bg-white text-black shadow-[0_4px_24px_rgba(0,0,0,0.12)]">
-          <ul className="max-h-[70vh] overflow-auto py-3">
-            {categories.map((category) => (
-              <li key={category.slug} onMouseEnter={() => setActive(category.slug)}>
-                <Link
-                  href={`/kategorija/${category.slug}`}
-                  className={`block px-4 py-2 text-[14px] tracking-[-0.014em] ${category.slug === current.slug ? "bg-canvas" : "hover:bg-canvas"}`}
-                >
-                  {category.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <div className="max-h-[70vh] overflow-auto p-5">
-            <Link href={`/kategorija/${current.slug}`} className="text-[14px] font-medium tracking-[-0.014em]">
-              Sve · {current.name}
-            </Link>
-            <ul className="mt-3 columns-2 gap-x-6">
-              {current.subs.map((sub) => (
-                <li key={sub.slug} className="mb-1 break-inside-avoid">
-                  <Link
-                    href={`/kategorija/${current.slug}/${sub.slug}`}
-                    className="block py-1 text-[14px] tracking-[-0.014em] text-[#787574] hover:text-black"
-                  >
-                    {sub.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+    <div className="grid gap-6 sm:grid-cols-[220px_1fr]">
+      <ul className="max-h-[50vh] overflow-auto sm:max-h-[60vh]">
+        {categories.map((category) => (
+          <li key={category.slug}>
+            <button
+              type="button"
+              onMouseEnter={() => setActive(category.slug)}
+              onFocus={() => setActive(category.slug)}
+              onClick={() => setActive(category.slug)}
+              className={`block w-full px-1 py-2 text-left text-[15px] tracking-[-0.014em] ${category.slug === current.slug ? "font-medium" : "text-[#787574]"}`}
+            >
+              {category.name}
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div className="max-h-[50vh] overflow-auto sm:max-h-[60vh]">
+        <Link href={`/kategorija/${current.slug}`} onClick={onNavigate} className="text-[15px] font-medium tracking-[-0.014em]">
+          Sve · {current.name}
+        </Link>
+        <ul className="mt-3 columns-2 gap-x-6">
+          {current.subs.map((sub) => (
+            <li key={sub.slug} className="mb-1 break-inside-avoid">
+              <Link
+                href={`/kategorija/${current.slug}/${sub.slug}`}
+                onClick={onNavigate}
+                className="block py-1 text-[14px] tracking-[-0.014em] text-[#787574] hover:text-black"
+              >
+                {sub.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
-  );
-}
-
-function MobileMenu() {
-  const { user } = useAccount();
-  const links = [...rail, { href: user ? "/racun" : "/prijava", label: user ? "Račun" : "Prijava" }];
-  return (
-    <Sheet>
-      <SheetTrigger
-        className="inline-flex size-10 items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] lg:hidden"
-        aria-label="Izbornik"
-      >
-        <Menu className="size-4" strokeWidth={1.75} />
-      </SheetTrigger>
-      <SheetContent side="left" className="w-[min(100%,22rem)] overflow-y-auto rounded-none bg-white">
-        <SheetHeader>
-          <SheetTitle className="text-[20px] font-medium tracking-[-0.05em]">LASER</SheetTitle>
-        </SheetHeader>
-        <div className="flex flex-col gap-5 px-4 pb-10">
-          <SearchBar />
-          {links.map((item) => (
-            <Link key={item.href} href={item.href} className="text-[16px] tracking-[-0.031em]">
-              {item.label}
-            </Link>
-          ))}
-          {categories.map((category) => (
-            <div key={category.slug}>
-              <Link href={`/kategorija/${category.slug}`} className="text-[16px] font-medium tracking-[-0.031em]">
-                {category.name}
-              </Link>
-              <div className="mt-1 flex flex-col">
-                {category.subs.map((sub) => (
-                  <Link
-                    key={sub.slug}
-                    href={`/kategorija/${category.slug}/${sub.slug}`}
-                    className="py-1 text-[14px] text-[#787574]"
-                  >
-                    {sub.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </SheetContent>
-    </Sheet>
   );
 }
 
@@ -135,75 +74,90 @@ export function SiteHeader() {
   const home = path === "/";
   const { count } = useCart();
   const { user } = useAccount();
-  const account = { href: user ? "/racun" : "/prijava", label: user ? "Račun" : "Prijava", icon: User };
-  const nav = [...rail, account];
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const profileHref = user ? "/racun" : "/prijava";
+
+  const tabs = [
+    { href: "/", label: "Home", icon: House, active: path === "/" },
+    { href: "/o-nama", label: "Info", icon: Info, active: path.startsWith("/o-nama") },
+    { href: "/#paketi", label: "Deals", icon: BadgePercent, active: false },
+    { href: "/kosarica", label: "Košarica", icon: ShoppingBag, active: path.startsWith("/kosarica") },
+    {
+      href: profileHref,
+      label: "Profil",
+      icon: User,
+      active: path.startsWith("/racun") || path.startsWith("/prijava") || path.startsWith("/registracija"),
+    },
+  ];
 
   return (
     <>
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-16 flex-col items-center bg-white py-4 lg:flex">
-        <CategoryPanel />
-        <nav className="mt-4 flex flex-1 flex-col items-center gap-1">
-          {nav.map((item) => {
-            const active =
-              item.href === "/"
-                ? home
-                : item.href === "/prijava" || item.href === "/racun"
-                  ? path.startsWith("/prijava") || path.startsWith("/registracija") || path.startsWith("/racun")
-                  : item.href.startsWith("/#")
-                    ? false
-                    : path.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-label={item.label}
-                className={`relative flex size-12 items-center justify-center rounded-[20px] ${active ? "bg-canvas" : "hover:bg-canvas"}`}
-              >
-                <item.icon className="size-5" strokeWidth={1.75} />
-                {item.href === "/kosarica" ? <CartBadge count={count} /> : null}
-              </Link>
-            );
-          })}
-        </nav>
-        <a
-          href="tel:+38739830773"
-          aria-label="Nazovi +387 39 830 773"
-          className="flex size-12 items-center justify-center rounded-[20px] hover:bg-canvas"
-        >
-          <Phone className="size-5" strokeWidth={1.75} />
-        </a>
-      </aside>
-      <div className={`bg-canvas ${home ? "lg:hidden" : ""} lg:pl-16`}>
+      <div className={`bg-canvas ${home ? "lg:hidden" : ""}`}>
         <div className="mx-auto flex max-w-[1200px] items-center gap-3 px-4 py-3">
-          <MobileMenu />
           <Logo />
-          {home ? null : <SearchBar className="hidden min-w-0 flex-1 md:block" />}
-          <div className="ml-auto flex items-center gap-2">
-            <a
-              href="tel:+38739830773"
-              aria-label="Nazovi"
-              className="inline-flex size-10 items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
-            >
-              <Phone className="size-4" strokeWidth={1.75} />
-            </a>
-            <Link
-              href={account.href}
-              aria-label={account.label}
-              className="inline-flex size-10 items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
-            >
-              <User className="size-4" strokeWidth={1.75} />
-            </Link>
-            <Link
-              href="/kosarica"
-              aria-label={count > 0 ? `Košarica, ${count}` : "Košarica"}
-              className="relative inline-flex size-10 items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
-            >
-              <ShoppingBag className="size-4" strokeWidth={1.75} />
-              <CartBadge count={count} className="-top-1 -right-1" />
-            </Link>
-          </div>
+          {home ? null : (
+            <SearchBar className="min-w-0 flex-1 [&_button]:size-9 [&_input]:h-11 [&_input]:pr-12 [&_input]:pl-4 [&_input]:text-[14px] sm:[&_button]:size-12 sm:[&_input]:h-14 sm:[&_input]:pr-16 sm:[&_input]:pl-5 sm:[&_input]:text-[16px]" />
+          )}
+          <a
+            href="tel:+38739830773"
+            aria-label="Nazovi"
+            className="ml-auto hidden size-10 shrink-0 items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] sm:inline-flex"
+          >
+            <Phone className="size-4" strokeWidth={1.75} />
+          </a>
         </div>
       </div>
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[#ebebeb] bg-white pb-[max(0.35rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto grid max-w-[720px] grid-cols-6">
+          <TabLink href="/" label="Home" icon={House} active={tabs[0].active} />
+          <Sheet open={categoriesOpen} onOpenChange={setCategoriesOpen}>
+            <SheetTrigger
+              className={`flex flex-col items-center gap-1 px-0.5 py-2 text-[11px] leading-none tracking-[-0.02em] whitespace-nowrap ${path.startsWith("/kategorija") ? "font-medium text-black" : "text-[#787574]"}`}
+            >
+              <LayoutGrid className="size-5" strokeWidth={1.75} />
+              Kategorije
+            </SheetTrigger>
+            <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-[28px] bg-white">
+              <SheetHeader>
+                <SheetTitle className="tracking-[-0.03em]">Kategorije</SheetTitle>
+              </SheetHeader>
+              <div className="px-4 pb-8">
+                <CategoryList onNavigate={() => setCategoriesOpen(false)} />
+              </div>
+            </SheetContent>
+          </Sheet>
+          {tabs.slice(1).map((item) => (
+            <TabLink key={item.label} href={item.href} label={item.label} icon={item.icon} active={item.active} badge={item.href === "/kosarica" ? count : 0} />
+          ))}
+        </div>
+      </nav>
     </>
+  );
+}
+
+function TabLink({
+  href,
+  label,
+  icon: Icon,
+  active,
+  badge = 0,
+}: {
+  href: string;
+  label: string;
+  icon: typeof House;
+  active: boolean;
+  badge?: number;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`relative flex flex-col items-center gap-1 px-0.5 py-2 text-[11px] leading-none tracking-[-0.02em] whitespace-nowrap ${active ? "font-medium text-black" : "text-[#787574]"}`}
+    >
+      <span className="relative">
+        <Icon className="size-5" strokeWidth={1.75} />
+        {badge > 0 ? <CartBadge count={badge} className="-top-2 -right-3" /> : null}
+      </span>
+      {label}
+    </Link>
   );
 }
