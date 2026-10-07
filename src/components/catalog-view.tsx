@@ -14,6 +14,14 @@ import {
 } from "@/components/ui/sheet";
 import { categories, floorTier, formatKm, type Category, type Product } from "@/lib/catalog";
 
+type FilterSelection = {
+  prints: string[];
+  inStock: boolean;
+  range: { low: number; high: number } | null;
+};
+
+const emptyFilters: FilterSelection = { prints: [], inStock: false, range: null };
+
 export function CatalogView({
   products,
   title,
@@ -327,14 +335,6 @@ function stepFor(min: number, max: number) {
   if (span > 10) return 0.1;
   return 0.01;
 }
-
-type FilterSelection = {
-  prints: string[];
-  inStock: boolean;
-  range: { low: number; high: number } | null;
-};
-
-const emptyFilters: FilterSelection = { prints: [], inStock: false, range: null };
 
 function normalizeFilters(
   selection: FilterSelection,
