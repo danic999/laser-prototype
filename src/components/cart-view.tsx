@@ -3,13 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ProductMark } from "@/components/product-mark";
-import { Input } from "@/components/ui/input";
+import { useAccount } from "@/components/account-provider";
 import { useCart } from "@/components/cart-provider";
 import { formatKm, formatQty, getProduct, unitForQty } from "@/lib/catalog";
 
 export function CartView() {
   const { items, setQty, removeItem, clear } = useCart();
-  const [error, setError] = useState("");
+  const { user } = useAccount();
   const [orderNo, setOrderNo] = useState<string | null>(null);
 
   const rows = items.map((item) => {
@@ -107,38 +107,48 @@ export function CartView() {
           </li>
         ))}
       </ul>
-      <form
-        className="h-fit rounded-[28px] bg-white p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]"
-        onSubmit={(event) => {
-          event.preventDefault();
-          const data = new FormData(event.currentTarget);
-          const company = String(data.get("tvrtka") ?? "").trim();
-          const person = String(data.get("ime") ?? "").trim();
-          const email = String(data.get("email") ?? "").trim();
-          const phone = String(data.get("telefon") ?? "").trim();
-          if (!company || !person || !email || !phone) {
-            setError("Upiši tvrtku, ime, e-mail i telefon.");
-            return;
-          }
-          setError("");
-          clear();
-          setOrderNo(`L-${Date.now().toString().slice(-6)}`);
-        }}
-      >
+      <aside className="h-fit rounded-[28px] bg-white p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]">
         <p className="text-[12px] text-[#787574]">Ukupno bez PDV-a</p>
         <p className="mt-1 text-[28px] leading-[1.2] font-medium tracking-[-0.05em]">{formatKm(total)}</p>
-        <div className="mt-5 flex flex-col gap-3">
-          <Input name="tvrtka" placeholder="Tvrtka" aria-label="Tvrtka" required />
-          <Input name="ime" placeholder="Ime i prezime" aria-label="Ime i prezime" required />
-          <Input name="email" type="email" placeholder="E-mail" aria-label="E-mail" required />
-          <Input name="telefon" type="tel" placeholder="Telefon" aria-label="Telefon" required />
-          <Input name="napomena" placeholder="Napomena" aria-label="Napomena" />
-        </div>
-        {error ? <p className="mt-3 text-[14px] text-black">{error}</p> : null}
-        <button type="submit" className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full bg-black text-[16px] text-white">
-          Naruči
-        </button>
-      </form>
+        {user ? (
+          <>
+            <p className="mt-5 text-[14px] font-medium">{user.company}</p>
+            <p className="text-[14px] text-[#787574]">
+              {user.name}
+              <br />
+              {user.email}
+              <br />
+              {user.phone}
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                clear();
+                setOrderNo(`L-${Date.now().toString().slice(-6)}`);
+              }}
+              className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full bg-black text-[16px] text-white"
+            >
+              Naruči
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="mt-5 text-[16px] leading-[1.4]">Narudžba ide samo s registriranim računom.</p>
+            <Link
+              href="/registracija?next=/kosarica"
+              className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full bg-black text-[16px] text-white"
+            >
+              Registracija
+            </Link>
+            <Link
+              href="/prijava?next=/kosarica"
+              className="mt-2 inline-flex h-12 w-full items-center justify-center rounded-full border border-[#ebebeb] bg-white text-[16px]"
+            >
+              Prijava
+            </Link>
+          </>
+        )}
+      </aside>
       </div>
     </div>
   );

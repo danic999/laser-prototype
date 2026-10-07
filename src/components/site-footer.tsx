@@ -56,6 +56,11 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link href="/prijava" className="text-white/75 hover:text-white">
+                Prijava
+              </Link>
+            </li>
+            <li>
               <Link href="/brand" className="text-white/75 hover:text-white">
                 Brand guide
               </Link>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAccount } from "@/components/account-provider";
 import { useCart } from "@/components/cart-provider";
 import { ProductMark } from "@/components/product-mark";
 import { formatKm, formatQty, savings, unitForQty, type Product } from "@/lib/catalog";
@@ -17,6 +18,7 @@ export function ProductStudio({ product }: { product: Product }) {
   const [logoError, setLogoError] = useState("");
   const router = useRouter();
   const { addItem } = useCart();
+  const { user } = useAccount();
 
   const color = product.colors.find((item) => item.id === colorId) ?? product.colors[0];
   const safeQty = Math.max(product.minQty, qty || product.minQty);
@@ -182,6 +184,11 @@ export function ProductStudio({ product }: { product: Product }) {
           >
             Naruči
           </button>
+          {user ? null : (
+            <p className="mt-3 text-center text-[14px] leading-[1.4] text-[#787574]">
+              Narudžba ide samo s registriranim računom.
+            </p>
+          )}
         </div>
         <p className="mt-4 text-[16px]">
           <Link href="/usluge" className="underline">

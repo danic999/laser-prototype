@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Gift, House, Info, LayoutGrid, Menu, Phone, Printer, ShoppingBag } from "lucide-react";
+import { Gift, House, Info, LayoutGrid, Menu, Phone, Printer, ShoppingBag, User } from "lucide-react";
+import { useAccount } from "@/components/account-provider";
 import { useCart } from "@/components/cart-provider";
 import { Logo } from "@/components/logo";
 import { SearchBar } from "@/components/search-bar";
@@ -75,6 +76,8 @@ function CategoryPanel() {
 }
 
 function MobileMenu() {
+  const { user } = useAccount();
+  const links = [...rail, { href: user ? "/racun" : "/prijava", label: user ? "Račun" : "Prijava" }];
   return (
     <Sheet>
       <SheetTrigger
@@ -89,7 +92,7 @@ function MobileMenu() {
         </SheetHeader>
         <div className="flex flex-col gap-5 px-4 pb-10">
           <SearchBar />
-          {rail.map((item) => (
+          {links.map((item) => (
             <Link key={item.href} href={item.href} className="text-[16px] tracking-[-0.031em]">
               {item.label}
             </Link>
@@ -131,14 +134,24 @@ export function SiteHeader() {
   const path = usePathname();
   const home = path === "/";
   const { count } = useCart();
+  const { user } = useAccount();
+  const account = { href: user ? "/racun" : "/prijava", label: user ? "Račun" : "Prijava", icon: User };
+  const nav = [...rail, account];
 
   return (
     <>
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-16 flex-col items-center bg-white py-4 lg:flex">
         <CategoryPanel />
         <nav className="mt-4 flex flex-1 flex-col items-center gap-1">
-          {rail.map((item) => {
-            const active = item.href === "/" ? home : path.startsWith(item.href);
+          {nav.map((item) => {
+            const active =
+              item.href === "/"
+                ? home
+                : item.href === "/prijava" || item.href === "/racun"
+                  ? path.startsWith("/prijava") || path.startsWith("/registracija") || path.startsWith("/racun")
+                  : item.href.startsWith("/#")
+                    ? false
+                    : path.startsWith(item.href);
             return (
               <Link
                 key={item.href}
@@ -173,6 +186,13 @@ export function SiteHeader() {
             >
               <Phone className="size-4" strokeWidth={1.75} />
             </a>
+            <Link
+              href={account.href}
+              aria-label={account.label}
+              className="inline-flex size-10 items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
+            >
+              <User className="size-4" strokeWidth={1.75} />
+            </Link>
             <Link
               href="/kosarica"
               aria-label={count > 0 ? `Košarica, ${count}` : "Košarica"}
