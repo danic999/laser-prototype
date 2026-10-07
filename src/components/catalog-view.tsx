@@ -97,23 +97,82 @@ export function CatalogView({
     setStored({ key: filterKey, draft: emptyFilters, applied: emptyFilters });
   }
 
+  const filterPanel = (
+    <div className="mt-3 space-y-5 border-l border-[#ebebeb] py-1 pl-3">
+      {priceBounds && priceBounds.max > priceBounds.min ? (
+        <PriceSlider
+          min={priceBounds.min}
+          max={priceBounds.max}
+          low={draft.range?.low ?? priceBounds.min}
+          high={draft.range?.high ?? priceBounds.max}
+          onChange={(nextLow, nextHigh) => updateDraft({ ...draft, range: { low: nextLow, high: nextHigh } })}
+        />
+      ) : null}
+      {printChoices.length > 0 ? (
+        <fieldset>
+          <legend className="text-[12px] tracking-[-0.014em] text-[#787574]">Tisak</legend>
+          <div className="mt-2 space-y-1">
+            {printChoices.map((option) => {
+              const checked = draft.prints.includes(option);
+              return (
+                <label key={option} className="flex items-center gap-2 py-0.5 text-[14px] tracking-[-0.014em]">
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => {
+                      const prints = checked
+                        ? draft.prints.filter((item) => item !== option)
+                        : [...draft.prints, option];
+                      updateDraft({ ...draft, prints });
+                    }}
+                    className="size-4 accent-black"
+                  />
+                  {option}
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
+      ) : null}
+      <label className="flex items-center gap-2 text-[14px] tracking-[-0.014em]">
+        <input
+          type="checkbox"
+          checked={draft.inStock}
+          onChange={(event) => updateDraft({ ...draft, inStock: event.target.checked })}
+          className="size-4 accent-black"
+        />
+        Na zalihi
+      </label>
+      {pending ? (
+        <button
+          type="button"
+          onClick={applyFilters}
+          className="h-10 w-full rounded-full bg-black text-[14px] tracking-[-0.014em] text-white"
+        >
+          Filteri · {pendingCount}
+        </button>
+      ) : null}
+    </div>
+  );
+
   const filters = (
-    <div className="space-y-8">
-      <div>
-        <p className="text-[12px] tracking-[-0.014em] text-[#787574]">Kategorije</p>
-        <ul className="mt-2 max-h-[min(420px,46vh)] overflow-y-auto pr-1 [scrollbar-width:thin]">
-          {categories.map((item) => {
-            const open = category?.slug === item.slug;
-            return (
-              <li key={item.slug}>
-                <Link
-                  href={`/kategorija/${item.slug}`}
-                  className={`block py-1.5 text-[14px] leading-[1.3] tracking-[-0.014em] ${open ? "font-medium text-black" : "text-black/75 hover:text-black"}`}
-                  aria-current={open && !activeSub ? "page" : undefined}
-                >
-                  {item.name}
-                </Link>
-                {open ? (
+    <div>
+      <p className="text-[12px] tracking-[-0.014em] text-[#787574]">Kategorije</p>
+      <ul className="mt-2">
+        {categories.map((item) => {
+          const open = category?.slug === item.slug;
+          return (
+            <li key={item.slug}>
+              <Link
+                href={`/kategorija/${item.slug}`}
+                className={`block py-1.5 text-[14px] leading-[1.3] tracking-[-0.014em] ${open ? "font-medium text-black" : "text-black/75 hover:text-black"}`}
+                aria-current={open && !activeSub ? "page" : undefined}
+              >
+                {item.name}
+              </Link>
+              {open ? (
+                <>
+                  {filterPanel}
                   <ul className="mb-1 ml-3 border-l border-[#ebebeb] pl-3">
                     <li>
                       <Link
@@ -135,67 +194,13 @@ export function CatalogView({
                       </li>
                     ))}
                   </ul>
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-      <div className="space-y-6 border-t border-[#ebebeb] pt-6">
-        {priceBounds && priceBounds.max > priceBounds.min ? (
-          <PriceSlider
-            min={priceBounds.min}
-            max={priceBounds.max}
-            low={draft.range?.low ?? priceBounds.min}
-            high={draft.range?.high ?? priceBounds.max}
-            onChange={(nextLow, nextHigh) => updateDraft({ ...draft, range: { low: nextLow, high: nextHigh } })}
-          />
-        ) : null}
-        {printChoices.length > 0 ? (
-          <fieldset>
-            <legend className="text-[12px] tracking-[-0.014em] text-[#787574]">Tisak</legend>
-            <div className="mt-2 space-y-1">
-              {printChoices.map((option) => {
-                const checked = draft.prints.includes(option);
-                return (
-                  <label key={option} className="flex items-center gap-2 py-0.5 text-[14px] tracking-[-0.014em]">
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => {
-                        const prints = checked
-                          ? draft.prints.filter((item) => item !== option)
-                          : [...draft.prints, option];
-                        updateDraft({ ...draft, prints });
-                      }}
-                      className="size-4 accent-black"
-                    />
-                    {option}
-                  </label>
-                );
-              })}
-            </div>
-          </fieldset>
-        ) : null}
-        <label className="flex items-center gap-2 text-[14px] tracking-[-0.014em]">
-          <input
-            type="checkbox"
-            checked={draft.inStock}
-            onChange={(event) => updateDraft({ ...draft, inStock: event.target.checked })}
-            className="size-4 accent-black"
-          />
-          Na zalihi
-        </label>
-        {pending ? (
-          <button
-            type="button"
-            onClick={applyFilters}
-            className="h-10 w-full rounded-full bg-black text-[14px] tracking-[-0.014em] text-white"
-          >
-            Filteri · {pendingCount}
-          </button>
-        ) : null}
-      </div>
+                </>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+      {category ? null : <div className="mt-6 border-t border-[#ebebeb] pt-6">{filterPanel}</div>}
     </div>
   );
 
@@ -292,9 +297,9 @@ function PriceSlider({
 
   return (
     <div>
-      <div className="flex items-baseline justify-between gap-3">
+      <div>
         <p className="text-[12px] tracking-[-0.014em] text-[#787574]">Cijena</p>
-        <p className="text-[14px] tracking-[-0.014em]">
+        <p className="mt-1 text-[14px] tracking-[-0.014em]">
           {formatKm(low)} – {formatKm(high)}
         </p>
       </div>
