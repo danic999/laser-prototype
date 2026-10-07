@@ -60,36 +60,36 @@ export default function HomePage() {
         </ul>
       </section>
 
-      {homeBands.map((band) => (
-        <section key={band.name} className="mx-auto max-w-[1200px] px-4 pb-14">
-          <Link href={band.href} className={sectionTitle}>
-            {band.name}
-            <ChevronRight className="size-4" />
-          </Link>
-          <div className="mt-4 flex gap-3 overflow-x-auto pb-1 snap-x [scrollbar-width:none] md:grid md:grid-cols-4 md:overflow-visible">
-            {band.tiles.map((tile) => (
-              <Link
-                key={tile.name}
-                href={tile.href}
-                className="group w-[68vw] shrink-0 snap-start sm:w-[240px] md:w-auto"
-              >
-                <span className={`relative block aspect-[3/4] overflow-hidden rounded-[28px] bg-white ${cardShadow}`}>
+      <div className="mx-auto grid max-w-[1200px] gap-x-5 gap-y-12 px-4 pb-16 lg:grid-cols-2">
+        {homeBands.map((band) => (
+          <section key={band.name}>
+            <Link href={band.href} className={sectionTitle}>
+              {band.name}
+              <ChevronRight className="size-4" />
+            </Link>
+            <div className={`mt-3 grid aspect-square grid-cols-2 grid-rows-2 gap-2 rounded-[32px] bg-white p-2 ${cardShadow}`}>
+              {band.tiles.map((tile) => (
+                <Link
+                  key={tile.name}
+                  href={tile.href}
+                  className="group relative block h-full min-h-0 overflow-hidden rounded-[20px] bg-canvas"
+                >
                   <Image
                     src={tile.image}
                     alt={tile.alt}
                     fill
-                    sizes="(min-width: 768px) 280px, 68vw"
+                    sizes="(min-width: 1024px) 280px, 45vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                   />
-                </span>
-                <span className="mt-3 block text-[16px] leading-[1.3] tracking-[-0.031em] text-black">
-                  {tile.name}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      ))}
+                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent px-3 pt-10 pb-2.5 text-[15px] leading-[1.2] tracking-[-0.03em] text-white sm:text-[16px]">
+                    {tile.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
 
       <section id="paketi" className="mx-auto max-w-[1200px] px-4 pb-16">
         <Link href="/#paketi" className={sectionTitle}>
