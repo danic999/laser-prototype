@@ -67,7 +67,7 @@ export default function HomePage() {
               {band.name}
               <ChevronRight className="size-4" />
             </Link>
-            <div className={`mt-3 grid aspect-square grid-cols-2 grid-rows-2 overflow-hidden rounded-[32px] ${cardShadow}`}>
+            <div className={`mt-3 grid aspect-square grid-cols-2 grid-rows-2 gap-[3px] overflow-hidden rounded-[32px] bg-white ${cardShadow}`}>
               {band.tiles.map((tile) => (
                 <Link
                   key={tile.name}
