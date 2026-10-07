@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { ProductCard } from "@/components/product-card";
-import { PromoRotator } from "@/components/promo-rotator";
+import { PromoFan } from "@/components/promo-fan";
 import { SearchBar } from "@/components/search-bar";
 import { products } from "@/lib/catalog";
 import { homeBands, promoAds } from "@/lib/home";
@@ -38,8 +38,8 @@ export default function HomePage() {
   return (
     <main>
       <section className="mx-auto max-w-[1200px] px-4 pt-6 pb-10 sm:pt-10">
-        <PromoRotator ads={promoAds} />
-        <div className="mt-8 hidden justify-center sm:flex">
+        <PromoFan ads={promoAds} />
+        <div className="mt-2 hidden justify-center sm:flex">
           <Logo className="[&_img]:h-10" />
         </div>
         <SearchBar className="mx-auto mt-6 max-w-[640px]" />
