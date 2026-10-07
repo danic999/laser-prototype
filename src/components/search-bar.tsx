@@ -13,7 +13,7 @@ export function SearchBar({ className = "" }: { className?: string }) {
         <button
           type="submit"
           aria-label="Traži"
-          className="absolute top-1 right-1 flex size-12 items-center justify-center rounded-full bg-violet text-white shadow-[0_4px_24px_rgba(69,36,219,0.34)]"
+          className="absolute top-1 right-1 flex size-12 items-center justify-center rounded-full bg-laser text-white shadow-[0_4px_24px_rgba(226,35,26,0.34)]"
         >
           <ArrowRight className="size-5" strokeWidth={1.75} />
         </button>

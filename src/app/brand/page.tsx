@@ -10,8 +10,7 @@ const colors = [
   { name: "Crna", hex: "#000000", role: "Tekst i ikone" },
   { name: "Linija", hex: "#ebebeb", role: "Tanak obrub pilula" },
   { name: "Siva", hex: "#787574", role: "Pomoćni tekst" },
-  { name: "Ljubičasta", hex: "#5433eb", role: "Samo dugme pretrage" },
-  { name: "Laser", hex: "#E2231A", role: "Zraka u znaku. Ne ide na gumbe." },
+  { name: "Laser", hex: "#E2231A", role: "Zraka u znaku i krug na pretrazi" },
 ];
 
 export default function BrandPage() {
@@ -47,7 +46,7 @@ export default function BrandPage() {
 
       <h2 className="mt-12 text-[20px] font-medium tracking-[-0.05em]">Slova i gumbi</h2>
       <p className="mt-3 max-w-xl text-[16px] leading-[1.33] text-[#787574]">
-        Inter, bez debelog reza. Naslov je 20 px, tekst 16 px, tijesni razmak slova. Gumbi su pilule. Ljubičasta je samo krug na pretrazi.
+        Inter, bez debelog reza. Naslov je 20 px, tekst 16 px, tijesni razmak slova. Gumbi su pilule. Crvena iz znaka je samo krug na pretrazi.
       </p>
       <div className="mt-4">
         <span className={btnPill}>Odaberi</span>
