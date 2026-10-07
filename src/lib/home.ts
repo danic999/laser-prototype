@@ -154,4 +154,34 @@ export const homeBands: HomeBand[] = [
       },
     ],
   },
+  {
+    href: "/kategorija/odjeca-i-dodaci",
+    name: "Odjeća i dodaci",
+    tiles: [
+      {
+        href: "/kategorija/odjeca-i-dodaci/polo-majice",
+        name: "Polo majice",
+        image: "/spots/spot-polo.jpg",
+        alt: "Presavijena teget polo majica",
+      },
+      {
+        href: "/kategorija/odjeca-i-dodaci/majice",
+        name: "Majice",
+        image: "/spots/spot-majice.jpg",
+        alt: "Presavijena siva majica",
+      },
+      {
+        href: "/kategorija/odjeca-i-dodaci/kape",
+        name: "Kape",
+        image: "/spots/spot-kape.jpg",
+        alt: "Crna pamučna kapa",
+      },
+      {
+        href: "/kategorija/odjeca-i-dodaci/jakne",
+        name: "Jakne",
+        image: "/spots/spot-jakne.jpg",
+        alt: "Presavijena siva jakna",
+      },
+    ],
+  },
 ];

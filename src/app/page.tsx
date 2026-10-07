@@ -67,12 +67,12 @@ export default function HomePage() {
               {band.name}
               <ChevronRight className="size-4" />
             </Link>
-            <div className={`mt-3 grid aspect-square grid-cols-2 grid-rows-2 gap-2 rounded-[32px] bg-white p-2 ${cardShadow}`}>
+            <div className={`mt-3 grid aspect-square grid-cols-2 grid-rows-2 overflow-hidden rounded-[32px] ${cardShadow}`}>
               {band.tiles.map((tile) => (
                 <Link
                   key={tile.name}
                   href={tile.href}
-                  className="group relative block h-full min-h-0 overflow-hidden rounded-[20px] bg-canvas"
+                  className="group relative block h-full min-h-0 overflow-hidden bg-canvas"
                 >
                   <Image
                     src={tile.image}
