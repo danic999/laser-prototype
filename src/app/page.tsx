@@ -13,8 +13,10 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { ProductCard } from "@/components/product-card";
+import { PromoRotator } from "@/components/promo-rotator";
 import { SearchBar } from "@/components/search-bar";
 import { products } from "@/lib/catalog";
+import { homeBands, promoAds } from "@/lib/home";
 import { packageProducts, packages, packageTotalLabel } from "@/lib/packages";
 import { btnPill, cardShadow, sectionTitle } from "@/lib/ui";
 
@@ -30,76 +32,14 @@ const icons = [
   { href: "/kategorija/pokloni-i-igre/privjesci", label: "Privjesci", icon: Flag },
 ];
 
-const banners = [
-  {
-    href: "/#paketi",
-    image: "/promos/bozic.jpg",
-    alt: "Božićni poklon set",
-    title: "Božićni promo",
-    line: "Setovi za partnere",
-    className: "left-[6%] top-6 -rotate-6",
-  },
-  {
-    href: "/kategorija/slobodno-vrijeme/kisobrani",
-    image: "/promos/zima.jpg",
-    alt: "Zimski kišobrani",
-    title: "Zimski asortiman",
-    line: "Kišobran i teren",
-    className: "left-1/2 top-0 z-10 -translate-x-1/2",
-  },
-  {
-    href: "/usluge",
-    image: "/promos/tisak.jpg",
-    alt: "Tisak na upaljaču",
-    title: "Tisak u kući",
-    line: "Gravura, UV, DTF",
-    className: "top-8 right-[6%] rotate-6",
-  },
-];
-
-function PromoAd({
-  banner,
-  className,
-}: {
-  banner: (typeof banners)[number];
-  className?: string;
-}) {
-  return (
-    <Link
-      href={banner.href}
-      className={`block overflow-hidden rounded-[22px] bg-black text-white ${cardShadow} ${className ?? ""}`}
-    >
-      <span className="relative block h-[112px]">
-        <Image src={banner.image} alt={banner.alt} fill sizes="200px" className="object-cover" />
-        <span className="absolute top-2 left-2 rounded-full bg-white px-2 py-0.5 text-[11px] leading-none font-medium tracking-[-0.02em] text-black">
-          Akcija
-        </span>
-      </span>
-      <span className="block px-3 py-2.5">
-        <span className="block text-[14px] leading-[1.2] font-medium tracking-[-0.02em]">{banner.title}</span>
-        <span className="mt-0.5 block text-[12px] leading-[1.3] text-white/70">{banner.line}</span>
-      </span>
-    </Link>
-  );
-}
-
 export default function HomePage() {
   const featured = products.filter((product) => product.featured).slice(0, 4);
 
   return (
     <main>
-      <section className="mx-auto max-w-[1200px] px-4 pt-6 pb-16 sm:pt-10">
-        <div className="relative mx-auto mb-8 hidden h-[250px] max-w-[760px] sm:block">
-          {banners.map((banner) => (
-            <PromoAd key={banner.title} banner={banner} className={`absolute w-[200px] ${banner.className}`} />
-          ))}
-        </div>
-        <div className="mb-6 flex justify-center gap-2 sm:hidden">
-          {banners.map((banner) => (
-            <PromoAd key={banner.title} banner={banner} className="w-[112px]" />
-          ))}
-        </div>
-        <div className="hidden justify-center sm:flex">
+      <section className="mx-auto max-w-[1200px] px-4 pt-6 pb-10 sm:pt-10">
+        <PromoRotator ads={promoAds} />
+        <div className="mt-8 hidden justify-center sm:flex">
           <Logo className="[&_img]:h-10" />
         </div>
         <SearchBar className="mx-auto mt-6 max-w-[640px]" />
@@ -119,6 +59,37 @@ export default function HomePage() {
           ))}
         </ul>
       </section>
+
+      {homeBands.map((band) => (
+        <section key={band.name} className="mx-auto max-w-[1200px] px-4 pb-14">
+          <Link href={band.href} className={sectionTitle}>
+            {band.name}
+            <ChevronRight className="size-4" />
+          </Link>
+          <div className="mt-4 flex gap-3 overflow-x-auto pb-1 snap-x [scrollbar-width:none] md:grid md:grid-cols-4 md:overflow-visible">
+            {band.tiles.map((tile) => (
+              <Link
+                key={tile.name}
+                href={tile.href}
+                className="group w-[68vw] shrink-0 snap-start sm:w-[240px] md:w-auto"
+              >
+                <span className={`relative block aspect-[3/4] overflow-hidden rounded-[28px] bg-white ${cardShadow}`}>
+                  <Image
+                    src={tile.image}
+                    alt={tile.alt}
+                    fill
+                    sizes="(min-width: 768px) 280px, 68vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                </span>
+                <span className="mt-3 block text-[16px] leading-[1.3] tracking-[-0.031em] text-black">
+                  {tile.name}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ))}
 
       <section id="paketi" className="mx-auto max-w-[1200px] px-4 pb-16">
         <Link href="/#paketi" className={sectionTitle}>
