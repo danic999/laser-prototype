@@ -51,11 +51,7 @@ export default async function ProductPage({
       <div className="mt-6">
         <ProductStudio product={product} />
       </div>
-      <div className="mt-12 grid gap-10 border-t border-border pt-8 lg:grid-cols-2">
-        <section>
-          <h2 className="text-[20px] leading-[1.2] font-medium tracking-[-0.05em]">Opis</h2>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{product.description}</p>
-        </section>
+      <div className="mt-12 max-w-xl border-t border-border pt-8">
         <section>
           <h2 className="text-[20px] leading-[1.2] font-medium tracking-[-0.05em]">Podaci</h2>
           <dl className="mt-3 divide-y divide-border text-sm">

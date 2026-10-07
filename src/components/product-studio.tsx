@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ImagePlus } from "lucide-react";
 import { useAccount } from "@/components/account-provider";
 import { useCart } from "@/components/cart-provider";
 import { ProductMark } from "@/components/product-mark";
 import { formatKm, formatQty, savings, unitForQty, type Product } from "@/lib/catalog";
-import { btnPill } from "@/lib/ui";
 
 export function ProductStudio({ product }: { product: Product }) {
   const [colorId, setColorId] = useState(product.colors[0].id);
@@ -32,9 +32,20 @@ export function ProductStudio({ product }: { product: Product }) {
         <div className="rounded-[28px] bg-white p-2 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]">
           <ProductMark src={color.image} alt={`${product.name}, ${color.name}`} logo={logo} priority />
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          <label className={`${btnPill} cursor-pointer`}>
-            {logo ? "Promijeni logo" : "Učitaj svoj logo"}
+        <div className="mt-4 flex items-start gap-3">
+          <label className="flex size-40 cursor-pointer flex-col items-center justify-center gap-2 rounded-[22px] border-2 border-dashed border-[#e2231a] bg-[#fff4f2] px-3 text-center shadow-[0_8px_20px_rgba(226,35,26,0.14)]">
+            {logo ? (
+              // User files are data URLs, so they stay outside the image optimizer.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logo} alt="" className="h-16 w-full object-contain" />
+            ) : (
+              <span className="grid size-12 place-items-center rounded-[16px] bg-[#e2231a] text-white">
+                <ImagePlus className="size-5" strokeWidth={1.75} />
+              </span>
+            )}
+            <span className="text-[14px] leading-tight font-medium tracking-[-0.02em]">
+              {logo ? "Promijeni logo" : "Učitaj svoj logo"}
+            </span>
             <input
               type="file"
               accept="image/png,image/jpeg,image/webp,image/svg+xml"
@@ -51,14 +62,16 @@ export function ProductStudio({ product }: { product: Product }) {
             />
           </label>
           {logo ? (
-            <button type="button" onClick={() => setLogo(null)} className="text-[14px] underline">
+            <button type="button" onClick={() => setLogo(null)} className="mt-2 text-[14px] text-[#e2231a] underline">
               Ukloni
             </button>
-          ) : (
-            <p className="text-[14px] text-[#787574]">Logo se prikaže na artiklu.</p>
-          )}
+          ) : null}
         </div>
         {logoError ? <p className="mt-2 text-[14px]">{logoError}</p> : null}
+        <div className="mt-6">
+          <h2 className="text-[20px] leading-[1.2] font-medium tracking-[-0.05em]">Opis</h2>
+          <p className="mt-2 max-w-xl text-[16px] leading-[1.45] text-[#3d3a39]">{product.description}</p>
+        </div>
       </div>
       <div className="rounded-[28px] bg-white p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] sm:p-8">
         <p className="text-[12px] text-[#787574]">Odabir</p>
