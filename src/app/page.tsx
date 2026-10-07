@@ -40,7 +40,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-[1200px] px-4 pt-6 pb-10 sm:pt-10">
         <PromoFan ads={promoAds} />
         <div className="mt-2 hidden justify-center sm:flex">
-          <Logo className="[&_img]:h-10" />
+          <Logo className="[&_img]:h-12" />
         </div>
         <SearchBar className="mx-auto mt-6 max-w-[640px]" />
         <ul className="mt-6 flex justify-start gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-center [scrollbar-width:none]">
