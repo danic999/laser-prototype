@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +40,10 @@ export function CatalogView({
   const [sort, setSort] = useState("preporuceno");
   const [sheetOpen, setSheetOpen] = useState(false);
   const [menu, setMenu] = useState<"sort" | "cijena" | "tisak" | null>(null);
-  const barRef = useRef<HTMLDivElement>(null);
+  const [sortDraft, setSortDraft] = useState(sort);
+  const [printDraft, setPrintDraft] = useState<string[]>([]);
+  const [rangeDraft, setRangeDraft] = useState<{ low: number; high: number } | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const [stored, setStored] = useState<{
     key: string;
     draft: FilterSelection;
@@ -64,18 +67,25 @@ export function CatalogView({
   }, [products]);
 
   const filterKey = `${priceBounds?.min ?? "x"}|${priceBounds?.max ?? "x"}|${printChoices.join(",")}`;
-  const draft = stored?.key === filterKey ? stored.draft : emptyFilters;
   const applied = stored?.key === filterKey ? stored.applied : emptyFilters;
-  const pending = !sameFilters(draft, applied);
 
-  function updateDraft(next: FilterSelection) {
-    setStored({ key: filterKey, draft: normalizeFilters(next, priceBounds), applied });
+  function openMenu(next: "sort" | "cijena" | "tisak") {
+    setSortDraft(sort);
+    setPrintDraft(applied.prints);
+    setRangeDraft(applied.range);
+    setMenu(next);
   }
 
-  function applyFilters() {
-    setStored({ key: filterKey, draft, applied: draft });
+  function commit(nextApplied: FilterSelection, nextSort = sort) {
+    const normalized = normalizeFilters(nextApplied, priceBounds);
+    setStored({ key: filterKey, draft: normalized, applied: normalized });
+    setSort(nextSort);
     setMenu(null);
-    setSheetOpen(false);
+  }
+
+  function toggleStock() {
+    const next = normalizeFilters({ ...applied, inStock: !applied.inStock }, priceBounds);
+    setStored({ key: filterKey, draft: next, applied: next });
   }
 
   const visible = useMemo(() => {
@@ -89,20 +99,16 @@ export function CatalogView({
     return list;
   }, [products, applied, priceBounds, sort]);
 
-  const pendingCount = useMemo(
-    () => products.filter((product) => matchesFilters(product, draft, priceBounds)).length,
-    [products, draft, priceBounds],
-  );
-
   const filtersActive = !sameFilters(applied, emptyFilters);
 
   useEffect(() => {
     if (!menu) return;
-    function onPointerDown(event: PointerEvent) {
-      if (!barRef.current?.contains(event.target as Node)) setMenu(null);
+    dialogRef.current?.focus();
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenu(null);
     }
-    document.addEventListener("pointerdown", onPointerDown);
-    return () => document.removeEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [menu]);
 
   function resetFilters() {
@@ -113,120 +119,50 @@ export function CatalogView({
     "inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-full border border-[#ebebeb] bg-white px-4 text-[14px] tracking-[-0.014em] whitespace-nowrap text-black shadow-[0_2px_8px_rgba(0,0,0,0.06)]";
   const chipOn =
     "inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-full border border-black bg-black px-4 text-[14px] tracking-[-0.014em] whitespace-nowrap text-white";
-  const popover =
-    "absolute top-12 left-0 z-20 rounded-[20px] border border-[#ebebeb] bg-white shadow-[0_4px_24px_rgba(0,0,0,0.12)]";
   const sortLabel = sort === "cijena" ? "Cijena, od niže" : sort === "naziv" ? "Naziv" : "Sortiraj";
-  const priceLabel = draft.range ? `${formatKm(draft.range.low)} – ${formatKm(draft.range.high)}` : "Cijena";
+  const priceLabel = applied.range ? `${formatKm(applied.range.low)} – ${formatKm(applied.range.high)}` : "Cijena";
+  const dialogLow = rangeDraft?.low ?? priceBounds?.min ?? 0;
+  const dialogHigh = rangeDraft?.high ?? priceBounds?.max ?? 0;
 
   const filterPanel = (
-    <div ref={barRef} className="mt-5 flex flex-wrap items-center gap-2">
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setMenu((current) => (current === "sort" ? null : "sort"))}
-          className={sort === "preporuceno" ? chip : chipOn}
-          aria-expanded={menu === "sort"}
-        >
-          {sortLabel}
-          <ChevronDown className={`size-4 ${menu === "sort" ? "rotate-180" : ""}`} />
-        </button>
-        {menu === "sort" ? (
-          <div className={`${popover} w-52 p-2`} role="listbox" aria-label="Sortiranje">
-            {(
-              [
-                ["preporuceno", "Sortiraj"],
-                ["cijena", "Cijena, od niže"],
-                ["naziv", "Naziv"],
-              ] as const
-            ).map(([value, label]) => (
-              <button
-                key={value}
-                type="button"
-                role="option"
-                aria-selected={sort === value}
-                onClick={() => {
-                  setSort(value);
-                  setMenu(null);
-                }}
-                className={`block w-full rounded-full px-3 py-2 text-left text-[14px] tracking-[-0.014em] ${sort === value ? "bg-black text-white" : "hover:bg-[#f2f4f5]"}`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        ) : null}
-      </div>
+    <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
       <button
         type="button"
-        onClick={() => updateDraft({ ...draft, inStock: !draft.inStock })}
-        className={draft.inStock ? chipOn : chip}
-        aria-pressed={draft.inStock}
+        onClick={() => openMenu("sort")}
+        className={sort === "preporuceno" ? chip : chipOn}
+        aria-expanded={menu === "sort"}
+      >
+        {sortLabel}
+        <ChevronDown className="size-4" />
+      </button>
+      <button
+        type="button"
+        onClick={toggleStock}
+        className={applied.inStock ? chipOn : chip}
+        aria-pressed={applied.inStock}
       >
         Na zalihi
       </button>
       {priceBounds && priceBounds.max > priceBounds.min ? (
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setMenu((current) => (current === "cijena" ? null : "cijena"))}
-            className={draft.range ? chipOn : chip}
-            aria-expanded={menu === "cijena"}
-          >
-            {priceLabel}
-            <ChevronDown className={`size-4 ${menu === "cijena" ? "rotate-180" : ""}`} />
-          </button>
-          {menu === "cijena" ? (
-            <div className={`${popover} w-72 p-4`}>
-              <PriceSlider
-                min={priceBounds.min}
-                max={priceBounds.max}
-                low={draft.range?.low ?? priceBounds.min}
-                high={draft.range?.high ?? priceBounds.max}
-                onChange={(nextLow, nextHigh) => updateDraft({ ...draft, range: { low: nextLow, high: nextHigh } })}
-              />
-            </div>
-          ) : null}
-        </div>
+        <button
+          type="button"
+          onClick={() => openMenu("cijena")}
+          className={applied.range ? chipOn : chip}
+          aria-expanded={menu === "cijena"}
+        >
+          {priceLabel}
+          <ChevronDown className="size-4" />
+        </button>
       ) : null}
       {printChoices.length > 0 ? (
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setMenu((current) => (current === "tisak" ? null : "tisak"))}
-            className={draft.prints.length > 0 ? chipOn : chip}
-            aria-expanded={menu === "tisak"}
-          >
-            {draft.prints.length > 0 ? `Tisak · ${draft.prints.length}` : "Tisak"}
-            <ChevronDown className={`size-4 ${menu === "tisak" ? "rotate-180" : ""}`} />
-          </button>
-          {menu === "tisak" ? (
-            <div className={`${popover} w-60 p-3`}>
-              {printChoices.map((option) => {
-                const checked = draft.prints.includes(option);
-                return (
-                  <label key={option} className="flex cursor-pointer items-center gap-2 rounded-full px-2 py-1.5 text-[14px] tracking-[-0.014em]">
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => {
-                        const prints = checked
-                          ? draft.prints.filter((item) => item !== option)
-                          : [...draft.prints, option];
-                        updateDraft({ ...draft, prints });
-                      }}
-                      className="size-4 accent-black"
-                    />
-                    {option}
-                  </label>
-                );
-              })}
-            </div>
-          ) : null}
-        </div>
-      ) : null}
-      {pending ? (
-        <button type="button" onClick={applyFilters} className={chipOn}>
-          Filteri · {pendingCount}
+        <button
+          type="button"
+          onClick={() => openMenu("tisak")}
+          className={applied.prints.length > 0 ? chipOn : chip}
+          aria-expanded={menu === "tisak"}
+        >
+          {applied.prints.length > 0 ? `Tisak · ${applied.prints.length}` : "Tisak"}
+          <ChevronDown className="size-4" />
         </button>
       ) : null}
     </div>
@@ -285,21 +221,21 @@ export function CatalogView({
         </div>
       </aside>
       <div>
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="text-[28px] leading-[1.2] font-medium tracking-[-0.05em]">{title}</h1>
-            {intro ? <p className="mt-2 max-w-2xl text-[16px] leading-[1.33] text-[#787574]">{intro}</p> : null}
-            {query ? (
-              <p className="mt-2 text-[16px] tracking-[-0.031em]">
-                Upit: <span className="font-medium">{query}</span>
-              </p>
-            ) : null}
-          </div>
+        <div className="text-center">
+          <h1 className="text-[34px] leading-none font-medium tracking-[-0.05em] sm:text-[40px]">{title}</h1>
+          {intro ? <p className="mx-auto mt-3 max-w-xl text-[14px] leading-[1.4] text-[#787574]">{intro}</p> : null}
+          {query ? (
+            <p className="mt-2 text-[16px] tracking-[-0.031em]">
+              Upit: <span className="font-medium">{query}</span>
+            </p>
+          ) : null}
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-            <SheetTrigger className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 text-[14px] shadow-[0_2px_8px_rgba(0,0,0,0.06)] lg:hidden">
-              <SlidersHorizontal className="size-4" />
-              Kategorije
-            </SheetTrigger>
+            <div className="mt-5 flex justify-center lg:hidden">
+              <SheetTrigger className="inline-flex h-10 items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 text-[14px] shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
+                <SlidersHorizontal className="size-4" />
+                Kategorije
+              </SheetTrigger>
+            </div>
             <SheetContent side="left" className="w-[min(100%,20rem)] overflow-y-auto bg-white">
               <SheetHeader>
                 <SheetTitle className="tracking-[-0.03em]">Kategorije</SheetTitle>
@@ -307,9 +243,9 @@ export function CatalogView({
               <div className="px-4 pb-6">{filters}</div>
             </SheetContent>
           </Sheet>
+          {filterPanel}
         </div>
-        {filterPanel}
-        <p className="mt-4 text-[14px] text-[#787574]">
+        <p className="mt-4 text-center text-[14px] text-[#787574]">
           {visible.length} artikala
           {filtersActive ? (
             <button type="button" onClick={resetFilters} className="ml-3 text-black underline-offset-2 hover:underline">
@@ -332,9 +268,152 @@ export function CatalogView({
             ))}
           </div>
         )}
+        {menu ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4"
+            onMouseDown={() => setMenu(null)}
+          >
+            <div
+              ref={dialogRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="filter-dialog-title"
+              tabIndex={-1}
+              className="w-full max-w-[28rem] rounded-[28px] bg-white p-5 shadow-[0_8px_40px_rgba(0,0,0,0.22)] outline-none"
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <div className="flex items-center justify-between">
+                <h2 id="filter-dialog-title" className="text-[20px] font-medium tracking-[-0.03em]">
+                  {menu === "sort" ? "Sortiraj" : menu === "cijena" ? "Cijena" : "Tisak"}
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setMenu(null)}
+                  aria-label="Zatvori"
+                  className="grid size-8 place-items-center rounded-full hover:bg-[#f2f4f5]"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+              {menu === "sort" ? (
+                <div className="mt-4" role="listbox" aria-label="Sortiranje">
+                  {(
+                    [
+                      ["preporuceno", "Preporučeno"],
+                      ["cijena", "Cijena, od niže"],
+                      ["naziv", "Naziv"],
+                    ] as const
+                  ).map(([value, label]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      role="option"
+                      aria-selected={sortDraft === value}
+                      onClick={() => setSortDraft(value)}
+                      className="flex w-full items-center justify-between py-3 text-left text-[16px] tracking-[-0.014em]"
+                    >
+                      {label}
+                      <span
+                        className={`grid size-5 place-items-center rounded-full border ${sortDraft === value ? "border-black bg-black" : "border-[#d5d5d5]"}`}
+                      >
+                        {sortDraft === value ? <span className="size-2 rounded-full bg-white" /> : null}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              {menu === "cijena" && priceBounds ? (
+                <div className="mt-5">
+                  <PriceSlider
+                    min={priceBounds.min}
+                    max={priceBounds.max}
+                    low={dialogLow}
+                    high={dialogHigh}
+                    onChange={(nextLow, nextHigh) => setRangeDraft({ low: nextLow, high: nextHigh })}
+                  />
+                  <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                    <input
+                      inputMode="decimal"
+                      aria-label="Najniža cijena"
+                      value={formatAmount(dialogLow)}
+                      onChange={(event) => {
+                        const next = Number(event.target.value.replace(",", "."));
+                        if (Number.isNaN(next)) return;
+                        setRangeDraft({ low: Math.min(Math.max(next, priceBounds.min), dialogHigh), high: dialogHigh });
+                      }}
+                      className="h-12 rounded-2xl border border-[#ebebeb] px-3 text-center text-[15px] outline-none"
+                    />
+                    <span className="text-[#787574]">–</span>
+                    <input
+                      inputMode="decimal"
+                      aria-label="Najviša cijena"
+                      value={formatAmount(dialogHigh)}
+                      onChange={(event) => {
+                        const next = Number(event.target.value.replace(",", "."));
+                        if (Number.isNaN(next)) return;
+                        setRangeDraft({ low: dialogLow, high: Math.max(Math.min(next, priceBounds.max), dialogLow) });
+                      }}
+                      className="h-12 rounded-2xl border border-[#ebebeb] px-3 text-center text-[15px] outline-none"
+                    />
+                  </div>
+                </div>
+              ) : null}
+              {menu === "tisak" ? (
+                <div className="mt-2">
+                  {printChoices.map((option) => {
+                    const checked = printDraft.includes(option);
+                    return (
+                      <label key={option} className="flex cursor-pointer items-center justify-between py-3 text-[16px] tracking-[-0.014em]">
+                        {option}
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            setPrintDraft(
+                              checked ? printDraft.filter((item) => item !== option) : [...printDraft, option],
+                            );
+                          }}
+                          className="size-5 accent-black"
+                        />
+                      </label>
+                    );
+                  })}
+                </div>
+              ) : null}
+              <div className="mt-6 grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (menu === "sort") setSortDraft("preporuceno");
+                    if (menu === "cijena") setRangeDraft(null);
+                    if (menu === "tisak") setPrintDraft([]);
+                  }}
+                  className="h-12 rounded-full bg-[#f2f4f5] text-[15px] font-medium"
+                >
+                  Poništi
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (menu === "sort") commit(applied, sortDraft);
+                    if (menu === "cijena") commit({ ...applied, range: rangeDraft });
+                    if (menu === "tisak") commit({ ...applied, prints: printDraft });
+                  }}
+                  className="h-12 rounded-full bg-black text-[15px] font-medium text-white"
+                >
+                  Gotovo
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
+}
+
+function formatAmount(value: number) {
+  return value.toFixed(2).replace(".", ",");
 }
 
 function PriceSlider({
@@ -356,19 +435,12 @@ function PriceSlider({
   const right = 100 - ((high - min) / span) * 100;
 
   return (
-    <div>
-      <div>
-        <p className="text-[12px] tracking-[-0.014em] text-[#787574]">Cijena</p>
-        <p className="mt-1 text-[14px] tracking-[-0.014em]">
-          {formatKm(low)} – {formatKm(high)}
-        </p>
-      </div>
-      <div className="relative mt-4 h-4">
-        <div className="absolute top-1/2 right-0 left-0 h-0.5 -translate-y-1/2 rounded-full bg-[#ebebeb]" />
-        <div
-          className="absolute top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-black"
-          style={{ left: `${left}%`, right: `${right}%` }}
-        />
+    <div className="relative mt-2 h-6">
+      <div className="absolute top-1/2 right-0 left-0 h-1 -translate-y-1/2 rounded-full bg-[#ebebeb]" />
+      <div
+        className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-black"
+        style={{ left: `${left}%`, right: `${right}%` }}
+      />
         <input
           type="range"
           min={min}
@@ -389,7 +461,6 @@ function PriceSlider({
           onChange={(event) => onChange(low, Math.max(Number(event.target.value), low))}
           className="range-thumb z-20"
         />
-      </div>
     </div>
   );
 }

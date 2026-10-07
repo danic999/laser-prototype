@@ -141,6 +141,7 @@
 
 .range-thumb {
   pointer-events: none;
+  outline: none;
   position: absolute;
   inset: 0;
   margin: 0;
