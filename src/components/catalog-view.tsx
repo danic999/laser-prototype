@@ -98,8 +98,9 @@ export function CatalogView({
   }
 
   const filterPanel = (
-    <div className="mt-3 space-y-5 border-l border-[#ebebeb] py-1 pl-3">
+    <div className="mt-6 flex flex-wrap items-end gap-x-8 gap-y-4">
       {priceBounds && priceBounds.max > priceBounds.min ? (
+        <div className="min-w-[220px] max-w-xs flex-1">
         <PriceSlider
           min={priceBounds.min}
           max={priceBounds.max}
@@ -107,6 +108,7 @@ export function CatalogView({
           high={draft.range?.high ?? priceBounds.max}
           onChange={(nextLow, nextHigh) => updateDraft({ ...draft, range: { low: nextLow, high: nextHigh } })}
         />
+        </div>
       ) : null}
       {printChoices.length > 0 ? (
         <fieldset>
@@ -147,7 +149,7 @@ export function CatalogView({
         <button
           type="button"
           onClick={applyFilters}
-          className="h-10 w-full rounded-full bg-black text-[14px] tracking-[-0.014em] text-white"
+            className="h-10 rounded-full bg-black px-5 text-[14px] tracking-[-0.014em] text-white"
         >
           Filteri · {pendingCount}
         </button>
@@ -171,9 +173,7 @@ export function CatalogView({
                 {item.name}
               </Link>
               {open ? (
-                <>
-                  {filterPanel}
-                  <ul className="mb-1 ml-3 border-l border-[#ebebeb] pl-3">
+                <ul className="mb-1 ml-3 border-l border-[#ebebeb] pl-3">
                     <li>
                       <Link
                         href={`/kategorija/${item.slug}`}
@@ -194,13 +194,11 @@ export function CatalogView({
                       </li>
                     ))}
                   </ul>
-                </>
               ) : null}
             </li>
           );
         })}
       </ul>
-      {category ? null : <div className="mt-6 border-t border-[#ebebeb] pt-6">{filterPanel}</div>}
     </div>
   );
 
@@ -226,11 +224,11 @@ export function CatalogView({
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
               <SheetTrigger className="inline-flex h-10 items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 text-[14px] shadow-[0_2px_8px_rgba(0,0,0,0.06)] lg:hidden">
                 <SlidersHorizontal className="size-4" />
-                Filteri
+                Kategorije
               </SheetTrigger>
               <SheetContent side="left" className="w-[min(100%,20rem)] overflow-y-auto bg-white">
                 <SheetHeader>
-                  <SheetTitle className="tracking-[-0.03em]">Filteri</SheetTitle>
+                  <SheetTitle className="tracking-[-0.03em]">Kategorije</SheetTitle>
                 </SheetHeader>
                 <div className="px-4 pb-6">{filters}</div>
               </SheetContent>
@@ -249,6 +247,7 @@ export function CatalogView({
             </label>
           </div>
         </div>
+        {filterPanel}
         <p className="mt-4 text-[14px] text-[#787574]">
           {visible.length} artikala
           {filtersActive ? (
