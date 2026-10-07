@@ -1,16 +1,22 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Image from "next/image";
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCart } from "@/components/cart-provider";
+import { ProductMark } from "@/components/product-mark";
 import { formatKm, formatQty, savings, unitForQty, type Product } from "@/lib/catalog";
-import { btnFill, btnOutline } from "@/lib/ui";
+import { btnPill } from "@/lib/ui";
 
 export function ProductStudio({ product }: { product: Product }) {
   const [colorId, setColorId] = useState(product.colors[0].id);
   const [print, setPrint] = useState(product.prints[0]);
   const [location, setLocation] = useState(product.locations[0]);
   const [qty, setQty] = useState(product.tiers[1]?.qty ?? product.minQty);
+  const [logo, setLogo] = useState<string | null>(null);
+  const [logoError, setLogoError] = useState("");
+  const router = useRouter();
+  const { addItem } = useCart();
 
   const color = product.colors.find((item) => item.id === colorId) ?? product.colors[0];
   const safeQty = Math.max(product.minQty, qty || product.minQty);
@@ -18,36 +24,39 @@ export function ProductStudio({ product }: { product: Product }) {
   const save = savings(product, unit);
   const total = unit * safeQty;
 
-  const quoteHref = useMemo(() => {
-    const params = new URLSearchParams({
-      sku: product.sku,
-      artikal: product.name,
-      boja: color.name,
-      tisak: print,
-      pozicija: location,
-      kolicina: String(safeQty),
-    });
-    return `/ponuda?${params.toString()}`;
-  }, [product, color.name, print, location, safeQty]);
-
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
       <div>
         <div className="rounded-[28px] bg-white p-2 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]">
-          <div className="relative aspect-square overflow-hidden rounded-[20px] bg-canvas">
-            <Image
-              src={color.image}
-              alt={`${product.name}, ${color.name}`}
-              fill
-              priority
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-contain"
-            />
-          </div>
+          <ProductMark src={color.image} alt={`${product.name}, ${color.name}`} logo={logo} priority />
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">
-          Fotografija je bez logotipa. Dokaz s vašim znakom dolazi prije izrade.
-        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <label className={`${btnPill} cursor-pointer`}>
+            {logo ? "Promijeni logo" : "Učitaj svoj logo"}
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/svg+xml"
+              className="sr-only"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                event.target.value = "";
+                if (!file) return;
+                setLogoError("");
+                prepareLogo(file)
+                  .then(setLogo)
+                  .catch(() => setLogoError("Logo nije učitan. Probaj PNG, JPG ili SVG."));
+              }}
+            />
+          </label>
+          {logo ? (
+            <button type="button" onClick={() => setLogo(null)} className="text-[14px] underline">
+              Ukloni
+            </button>
+          ) : (
+            <p className="text-[14px] text-[#787574]">Logo se prikaže na artiklu.</p>
+          )}
+        </div>
+        {logoError ? <p className="mt-2 text-[14px]">{logoError}</p> : null}
       </div>
       <div className="rounded-[28px] bg-white p-6 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] sm:p-8">
         <p className="text-[12px] text-[#787574]">Odabir</p>
@@ -152,13 +161,27 @@ export function ProductStudio({ product }: { product: Product }) {
           </div>
         </div>
         <p className="mt-3 text-sm">Rok: {product.lead}.</p>
-        <div className="mt-6 flex flex-col gap-3">
-          <Link href={quoteHref} className={btnFill}>
-            Zatraži ponudu
-          </Link>
-          <Link href={`${quoteHref}&uzorak=1`} className={btnOutline}>
-            Zatraži uzorak
-          </Link>
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={() => {
+              addItem({
+                slug: product.slug,
+                name: product.name,
+                sku: product.sku,
+                image: color.image,
+                colorName: color.name,
+                print,
+                location,
+                qty: safeQty,
+                logo,
+              });
+              router.push("/kosarica");
+            }}
+            className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black text-[16px] text-white"
+          >
+            Naruči
+          </button>
         </div>
         <p className="mt-4 text-[16px]">
           <Link href="/usluge" className="underline">
@@ -166,10 +189,40 @@ export function ProductStudio({ product }: { product: Product }) {
           </Link>
         </p>
         <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-          Ljestvica je primjer rasporeda cijena u prototipu. Službeni iznos i dalje potvrđuje veleprodaja.
-          Dokaz tiska prije serije je predloženi korak novog shopa.
+          Ljestvica je primjer rasporeda cijena. Iznos je bez PDV-a.
         </p>
       </div>
     </div>
   );
+}
+
+function readFile(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function prepareLogo(file: File) {
+  if (!file.type.startsWith("image/")) throw new Error("type");
+  const data = await readFile(file);
+  if (file.type === "image/svg+xml") return data;
+  const img = new Image();
+  await new Promise<void>((resolve, reject) => {
+    img.onload = () => resolve();
+    img.onerror = () => reject(new Error("img"));
+    img.src = data;
+  });
+  const max = 480;
+  const scale = Math.min(1, max / Math.max(img.width, img.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(img.width * scale));
+  canvas.height = Math.max(1, Math.round(img.height * scale));
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return data;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/png");
 }

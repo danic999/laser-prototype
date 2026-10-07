@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Gift, House, Info, LayoutGrid, Menu, Phone, Printer, ShoppingBag } from "lucide-react";
+import { useCart } from "@/components/cart-provider";
 import { Logo } from "@/components/logo";
 import { SearchBar } from "@/components/search-bar";
 import {
@@ -20,7 +21,7 @@ const rail = [
   { href: "/#paketi", label: "Paketi", icon: Gift },
   { href: "/usluge", label: "Usluge", icon: Printer },
   { href: "/o-nama", label: "O nama", icon: Info },
-  { href: "/ponuda", label: "Ponuda", icon: ShoppingBag },
+  { href: "/kosarica", label: "Košarica", icon: ShoppingBag },
 ];
 
 function CategoryPanel() {
@@ -117,9 +118,19 @@ function MobileMenu() {
   );
 }
 
+function CartBadge({ count, className }: { count: number; className?: string }) {
+  if (count < 1) return null;
+  return (
+    <span className={`absolute grid min-w-5 place-items-center rounded-full bg-black px-1 text-[11px] leading-5 text-white ${className ?? "top-1 right-1"}`}>
+      {count}
+    </span>
+  );
+}
+
 export function SiteHeader() {
   const path = usePathname();
   const home = path === "/";
+  const { count } = useCart();
 
   return (
     <>
@@ -133,9 +144,10 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 aria-label={item.label}
-                className={`flex size-12 items-center justify-center rounded-[20px] ${active ? "bg-canvas" : "hover:bg-canvas"}`}
+                className={`relative flex size-12 items-center justify-center rounded-[20px] ${active ? "bg-canvas" : "hover:bg-canvas"}`}
               >
                 <item.icon className="size-5" strokeWidth={1.75} />
+                {item.href === "/kosarica" ? <CartBadge count={count} /> : null}
               </Link>
             );
           })}
@@ -162,11 +174,12 @@ export function SiteHeader() {
               <Phone className="size-4" strokeWidth={1.75} />
             </a>
             <Link
-              href="/ponuda"
-              aria-label="Upit za ponudu"
-              className="inline-flex size-10 items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
+              href="/kosarica"
+              aria-label={count > 0 ? `Košarica, ${count}` : "Košarica"}
+              className="relative inline-flex size-10 items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
             >
               <ShoppingBag className="size-4" strokeWidth={1.75} />
+              <CartBadge count={count} className="-top-1 -right-1" />
             </Link>
           </div>
         </div>

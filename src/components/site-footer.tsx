@@ -51,8 +51,8 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link href="/ponuda" className="text-white/75 hover:text-white">
-                Upit za ponudu
+              <Link href="/kosarica" className="text-white/75 hover:text-white">
+                Košarica
               </Link>
             </li>
             <li>

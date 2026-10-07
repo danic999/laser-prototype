@@ -47,8 +47,8 @@ export default function AboutPage() {
         </div>
       </dl>
       <p className="mt-6 text-sm">
-        <Link href="/ponuda" className="underline">
-          Zatraži ponudu ili uzorak
+        <Link href="/kosarica" className="underline">
+          Košarica
         </Link>
       </p>
     </main>

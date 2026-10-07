@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/components/cart-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
@@ -23,11 +24,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="bs" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full bg-canvas font-sans text-black">
-        <SiteHeader />
-        <div className="flex min-h-full flex-col lg:pl-16">
-          {children}
-          <SiteFooter />
-        </div>
+        <CartProvider>
+          <SiteHeader />
+          <div className="flex min-h-full flex-col lg:pl-16">
+            {children}
+            <SiteFooter />
+          </div>
+        </CartProvider>
       </body>
     </html>
   );
