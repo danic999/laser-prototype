@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { SlidersHorizontal } from "lucide-react";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,6 +39,8 @@ export function CatalogView({
 }) {
   const [sort, setSort] = useState("preporuceno");
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [menu, setMenu] = useState<"sort" | "cijena" | "tisak" | null>(null);
+  const barRef = useRef<HTMLDivElement>(null);
   const [stored, setStored] = useState<{
     key: string;
     draft: FilterSelection;
@@ -72,6 +74,7 @@ export function CatalogView({
 
   function applyFilters() {
     setStored({ key: filterKey, draft, applied: draft });
+    setMenu(null);
     setSheetOpen(false);
   }
 
@@ -93,64 +96,136 @@ export function CatalogView({
 
   const filtersActive = !sameFilters(applied, emptyFilters);
 
+  useEffect(() => {
+    if (!menu) return;
+    function onPointerDown(event: PointerEvent) {
+      if (!barRef.current?.contains(event.target as Node)) setMenu(null);
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [menu]);
+
   function resetFilters() {
     setStored({ key: filterKey, draft: emptyFilters, applied: emptyFilters });
   }
 
+  const chip =
+    "inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-full border border-[#ebebeb] bg-white px-4 text-[14px] tracking-[-0.014em] whitespace-nowrap text-black shadow-[0_2px_8px_rgba(0,0,0,0.06)]";
+  const chipOn =
+    "inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-full border border-black bg-black px-4 text-[14px] tracking-[-0.014em] whitespace-nowrap text-white";
+  const popover =
+    "absolute top-12 left-0 z-20 rounded-[20px] border border-[#ebebeb] bg-white shadow-[0_4px_24px_rgba(0,0,0,0.12)]";
+  const sortLabel = sort === "cijena" ? "Cijena, od niže" : sort === "naziv" ? "Naziv" : "Sortiraj";
+  const priceLabel = draft.range ? `${formatKm(draft.range.low)} – ${formatKm(draft.range.high)}` : "Cijena";
+
   const filterPanel = (
-    <div className="mt-6 flex flex-wrap items-end gap-x-8 gap-y-4">
+    <div ref={barRef} className="mt-5 flex flex-wrap items-center gap-2">
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setMenu((current) => (current === "sort" ? null : "sort"))}
+          className={sort === "preporuceno" ? chip : chipOn}
+          aria-expanded={menu === "sort"}
+        >
+          {sortLabel}
+          <ChevronDown className={`size-4 ${menu === "sort" ? "rotate-180" : ""}`} />
+        </button>
+        {menu === "sort" ? (
+          <div className={`${popover} w-52 p-2`} role="listbox" aria-label="Sortiranje">
+            {(
+              [
+                ["preporuceno", "Sortiraj"],
+                ["cijena", "Cijena, od niže"],
+                ["naziv", "Naziv"],
+              ] as const
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                role="option"
+                aria-selected={sort === value}
+                onClick={() => {
+                  setSort(value);
+                  setMenu(null);
+                }}
+                className={`block w-full rounded-full px-3 py-2 text-left text-[14px] tracking-[-0.014em] ${sort === value ? "bg-black text-white" : "hover:bg-[#f2f4f5]"}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      <button
+        type="button"
+        onClick={() => updateDraft({ ...draft, inStock: !draft.inStock })}
+        className={draft.inStock ? chipOn : chip}
+        aria-pressed={draft.inStock}
+      >
+        Na zalihi
+      </button>
       {priceBounds && priceBounds.max > priceBounds.min ? (
-        <div className="min-w-[220px] max-w-xs flex-1">
-        <PriceSlider
-          min={priceBounds.min}
-          max={priceBounds.max}
-          low={draft.range?.low ?? priceBounds.min}
-          high={draft.range?.high ?? priceBounds.max}
-          onChange={(nextLow, nextHigh) => updateDraft({ ...draft, range: { low: nextLow, high: nextHigh } })}
-        />
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setMenu((current) => (current === "cijena" ? null : "cijena"))}
+            className={draft.range ? chipOn : chip}
+            aria-expanded={menu === "cijena"}
+          >
+            {priceLabel}
+            <ChevronDown className={`size-4 ${menu === "cijena" ? "rotate-180" : ""}`} />
+          </button>
+          {menu === "cijena" ? (
+            <div className={`${popover} w-72 p-4`}>
+              <PriceSlider
+                min={priceBounds.min}
+                max={priceBounds.max}
+                low={draft.range?.low ?? priceBounds.min}
+                high={draft.range?.high ?? priceBounds.max}
+                onChange={(nextLow, nextHigh) => updateDraft({ ...draft, range: { low: nextLow, high: nextHigh } })}
+              />
+            </div>
+          ) : null}
         </div>
       ) : null}
       {printChoices.length > 0 ? (
-        <fieldset>
-          <legend className="text-[12px] tracking-[-0.014em] text-[#787574]">Tisak</legend>
-          <div className="mt-2 space-y-1">
-            {printChoices.map((option) => {
-              const checked = draft.prints.includes(option);
-              return (
-                <label key={option} className="flex items-center gap-2 py-0.5 text-[14px] tracking-[-0.014em]">
-                  <input
-                    type="checkbox"
-                    checked={checked}
-                    onChange={() => {
-                      const prints = checked
-                        ? draft.prints.filter((item) => item !== option)
-                        : [...draft.prints, option];
-                      updateDraft({ ...draft, prints });
-                    }}
-                    className="size-4 accent-black"
-                  />
-                  {option}
-                </label>
-              );
-            })}
-          </div>
-        </fieldset>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setMenu((current) => (current === "tisak" ? null : "tisak"))}
+            className={draft.prints.length > 0 ? chipOn : chip}
+            aria-expanded={menu === "tisak"}
+          >
+            {draft.prints.length > 0 ? `Tisak · ${draft.prints.length}` : "Tisak"}
+            <ChevronDown className={`size-4 ${menu === "tisak" ? "rotate-180" : ""}`} />
+          </button>
+          {menu === "tisak" ? (
+            <div className={`${popover} w-60 p-3`}>
+              {printChoices.map((option) => {
+                const checked = draft.prints.includes(option);
+                return (
+                  <label key={option} className="flex cursor-pointer items-center gap-2 rounded-full px-2 py-1.5 text-[14px] tracking-[-0.014em]">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => {
+                        const prints = checked
+                          ? draft.prints.filter((item) => item !== option)
+                          : [...draft.prints, option];
+                        updateDraft({ ...draft, prints });
+                      }}
+                      className="size-4 accent-black"
+                    />
+                    {option}
+                  </label>
+                );
+              })}
+            </div>
+          ) : null}
+        </div>
       ) : null}
-      <label className="flex items-center gap-2 text-[14px] tracking-[-0.014em]">
-        <input
-          type="checkbox"
-          checked={draft.inStock}
-          onChange={(event) => updateDraft({ ...draft, inStock: event.target.checked })}
-          className="size-4 accent-black"
-        />
-        Na zalihi
-      </label>
       {pending ? (
-        <button
-          type="button"
-          onClick={applyFilters}
-            className="h-10 rounded-full bg-black px-5 text-[14px] tracking-[-0.014em] text-white"
-        >
+        <button type="button" onClick={applyFilters} className={chipOn}>
           Filteri · {pendingCount}
         </button>
       ) : null}
@@ -220,32 +295,18 @@ export function CatalogView({
               </p>
             ) : null}
           </div>
-          <div className="flex items-center gap-2">
-            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-              <SheetTrigger className="inline-flex h-10 items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 text-[14px] shadow-[0_2px_8px_rgba(0,0,0,0.06)] lg:hidden">
-                <SlidersHorizontal className="size-4" />
-                Kategorije
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[min(100%,20rem)] overflow-y-auto bg-white">
-                <SheetHeader>
-                  <SheetTitle className="tracking-[-0.03em]">Kategorije</SheetTitle>
-                </SheetHeader>
-                <div className="px-4 pb-6">{filters}</div>
-              </SheetContent>
-            </Sheet>
-            <label className="text-[14px]">
-              <span className="sr-only">Sortiranje</span>
-              <select
-                value={sort}
-                onChange={(event) => setSort(event.target.value)}
-                className="h-10 rounded-full border border-[#ebebeb] bg-white px-4 tracking-[-0.014em] shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
-              >
-                <option value="preporuceno">Preporučeno</option>
-                <option value="cijena">Cijena, od niže</option>
-                <option value="naziv">Naziv</option>
-              </select>
-            </label>
-          </div>
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+            <SheetTrigger className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 text-[14px] shadow-[0_2px_8px_rgba(0,0,0,0.06)] lg:hidden">
+              <SlidersHorizontal className="size-4" />
+              Kategorije
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[min(100%,20rem)] overflow-y-auto bg-white">
+              <SheetHeader>
+                <SheetTitle className="tracking-[-0.03em]">Kategorije</SheetTitle>
+              </SheetHeader>
+              <div className="px-4 pb-6">{filters}</div>
+            </SheetContent>
+          </Sheet>
         </div>
         {filterPanel}
         <p className="mt-4 text-[14px] text-[#787574]">
