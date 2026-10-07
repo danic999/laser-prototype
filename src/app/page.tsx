@@ -33,7 +33,7 @@ const icons = [
 const banners = [
   {
     href: "/#paketi",
-    image: "/products/kutija.jpg",
+    image: "/promos/bozic.jpg",
     alt: "Božićni poklon set",
     title: "Božićni promo",
     line: "Setovi za partnere",
@@ -41,7 +41,7 @@ const banners = [
   },
   {
     href: "/kategorija/slobodno-vrijeme/kisobrani",
-    image: "/products/kisobran.jpg",
+    image: "/promos/zima.jpg",
     alt: "Zimski kišobrani",
     title: "Zimski asortiman",
     line: "Kišobran i teren",
@@ -49,7 +49,7 @@ const banners = [
   },
   {
     href: "/usluge",
-    image: "/products/upaljac.jpg",
+    image: "/promos/tisak.jpg",
     alt: "Tisak na upaljaču",
     title: "Tisak u kući",
     line: "Gravura, UV, DTF",
@@ -70,7 +70,7 @@ function PromoAd({
       className={`block overflow-hidden rounded-[22px] bg-black text-white ${cardShadow} ${className ?? ""}`}
     >
       <span className="relative block h-[112px]">
-        <Image src={banner.image} alt={banner.alt} fill sizes="200px" className="scale-150 object-cover" />
+        <Image src={banner.image} alt={banner.alt} fill sizes="200px" className="object-cover" />
         <span className="absolute top-2 left-2 rounded-full bg-white px-2 py-0.5 text-[11px] leading-none font-medium tracking-[-0.02em] text-black">
           Akcija
         </span>
