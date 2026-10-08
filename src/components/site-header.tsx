@@ -85,7 +85,7 @@ export function SiteHeader() {
 
   return (
     <>
-      <div className={`bg-canvas pl-[88px] ${home ? "lg:hidden" : ""}`}>
+      <div className={`bg-canvas pr-[76px] pl-[88px] sm:pr-[152px] ${home ? "lg:hidden" : ""}`}>
         <div className="mx-auto flex max-w-[1200px] items-center gap-3 px-4 py-3">
           <Logo />
           {home ? null : (

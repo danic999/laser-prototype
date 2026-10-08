@@ -5,6 +5,18 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Prototype v2 (Figma) palette */
+  --color-v2-ink: #121212;
+  --color-v2-ink-deep: #0b0b0b;
+  --color-v2-red: #e10613;
+  --color-v2-red-soft: #f8e8e6;
+  --color-v2-surface: #f6f3ee;
+  --color-v2-surface-strong: #f3efe8;
+  --color-v2-line: #e7e1d8;
+  --color-v2-muted: #5e5854;
+  --color-v2-footer-text: #c9d0e4;
+  --color-v2-footer-line: #2a3a72;
+  --font-v2: var(--font-montserrat), Montserrat, system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
@@ -193,4 +205,13 @@
   html {
     @apply font-sans;
   }
+}
+/* Prototype version switch: <html data-prototype> is set before paint by an inline script. */
+[data-prototype-view="v2"],
+html[data-prototype="v2"] [data-prototype-view="v1"] {
+  display: none;
+}
+
+html[data-prototype="v2"] [data-prototype-view="v2"] {
+  display: block;
 }

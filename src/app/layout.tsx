@@ -5,6 +5,9 @@ import { AccountProvider } from "@/components/account-provider";
 import { CartProvider } from "@/components/cart-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { PrototypeSwitcher } from "@/components/prototype-switcher";
+import { PrototypeV2 } from "@/components/prototype-v2/prototype-v2";
+import { prototypeVersionScript } from "@/lib/prototype-version";
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -23,17 +26,26 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bs" className={`${inter.variable} h-full antialiased`}>
+    <html lang="bs" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: prototypeVersionScript }} />
+      </head>
       <body className="min-h-full bg-canvas font-sans text-black">
-        <AccountProvider>
-          <CartProvider>
-            <SiteHeader />
-            <div className="flex min-h-full flex-col pl-[88px]">
-              {children}
-              <SiteFooter />
-            </div>
-          </CartProvider>
-        </AccountProvider>
+        <PrototypeSwitcher />
+        <div data-prototype-view="v1">
+          <AccountProvider>
+            <CartProvider>
+              <SiteHeader />
+              <div className="flex min-h-full flex-col pl-[88px]">
+                {children}
+                <SiteFooter />
+              </div>
+            </CartProvider>
+          </AccountProvider>
+        </div>
+        <div data-prototype-view="v2">
+          <PrototypeV2 />
+        </div>
       </body>
     </html>
   );
