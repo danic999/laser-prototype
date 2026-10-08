@@ -64,7 +64,7 @@ export function CartView() {
       <ul className="flex flex-col gap-3">
         {rows.map(({ item, product, unit, total: line }) => (
           <li key={item.id} className="grid grid-cols-[7rem_1fr] gap-4 rounded-[28px] bg-white p-3 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] sm:grid-cols-[9rem_1fr]">
-            <ProductMark src={item.image} alt={item.name} logo={item.logo} sizes="160px" />
+            <ProductMark src={item.image} alt={item.name} sizes="160px" />
             <div className="flex min-w-0 flex-col py-2 pr-2">
               <div className="flex items-start justify-between gap-3">
                 <div>

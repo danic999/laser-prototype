@@ -30,7 +30,7 @@ export function ProductStudio({ product }: { product: Product }) {
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
       <div>
         <div className="rounded-[28px] bg-white p-2 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]">
-          <ProductMark src={color.image} alt={`${product.name}, ${color.name}`} logo={logo} priority />
+          <ProductMark src={color.image} alt={`${product.name}, ${color.name}`} priority />
         </div>
         <div className="mt-4 flex items-start gap-3">
           <label className="flex size-40 cursor-pointer flex-col items-center justify-center gap-2 rounded-[22px] border-2 border-dashed border-[#e2231a] bg-[#fff4f2] px-3 text-center shadow-[0_8px_20px_rgba(226,35,26,0.14)]">
