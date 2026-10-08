@@ -36,7 +36,7 @@ export function PrototypeSwitcher() {
   const version = useSyncExternalStore(subscribe, readVersion, () => DEFAULT_PROTOTYPE_VERSION);
 
   return (
-    <label className="fixed top-3 right-3 z-[60] inline-flex h-10 items-center rounded-full border border-[#ebebeb] bg-white/90 pr-3 pl-3.5 sm:pl-4 text-[14px] tracking-[-0.014em] text-black shadow-[0_2px_8px_rgba(0,0,0,0.08)] backdrop-blur focus-within:ring-2 focus-within:ring-black/20">
+    <label className="fixed top-2 right-3 z-[60] inline-flex h-9 items-center rounded-full border border-[#ebebeb] bg-white/90 pr-3 pl-3.5 sm:pl-4 text-[14px] tracking-[-0.014em] text-black shadow-[0_2px_8px_rgba(0,0,0,0.08)] backdrop-blur focus-within:ring-2 focus-within:ring-black/20">
       <span className="sr-only">Verzija prototipa</span>
       <span aria-hidden className="pr-6 sm:hidden">
         {version}

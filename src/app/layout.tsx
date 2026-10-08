@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { PrototypeSwitcher } from "@/components/prototype-switcher";
 import { PrototypeV2 } from "@/components/prototype-v2/prototype-v2";
+import { PrototypeV3 } from "@/components/prototype-v3/prototype-v3";
 import { prototypeVersionScript } from "@/lib/prototype-version";
 
 const inter = Inter({
@@ -45,6 +46,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <div data-prototype-view="v2">
           <PrototypeV2 />
+        </div>
+        <div data-prototype-view="v3">
+          <PrototypeV3 />
         </div>
       </body>
     </html>
